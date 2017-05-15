@@ -6,26 +6,24 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 UIManager::WindowManager::WindowManager(HINSTANCE & hInstance, std::string wiName)
 {
-	this->wiName = wiName;
+	this->wiName = wiName.c_str();
+	this->hInstance = hInstance;
 	winClass.cbSize = sizeof(winClass);
 	winClass.hInstance = hInstance;
-	winClass.lpszClassName = wiName.c_str();
+	winClass.lpszClassName = this->wiName;
+	winClass.lpfnWndProc = WndProc; //Execution callback
 	//Load default editable ellements
-	winClass.hCursor = LoadCursor(0, IDC_ARROW); /*Default*/
-	//winClass.hIcon = LoadIcon(NULL, IDI_APPLICATION); /*Default*/		//Alt+Tab Dialog
-	winClass.lpfnWndProc = WndProc;
+	winClass.hCursor = LoadCursor(0, IDC_ARROW);		/*Default*/
+	winClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);	/*Default*/		//Alt+Tab Dialog
 	winClass.hbrBackground = GetSysColorBrush(COLOR_3DFACE);
-	//winClass.lpszMenuName = NULL; /* No menu */
-
-	if (!RegisterClassEx(&winClass)) {
-
-	}
+	winClass.lpszMenuName = NULL;						/* No menu */
+	RegisterClassEx(&winClass);
 
 	//Create Window
 	hwnd = CreateWindowEx(
 		0,
-		winClass.lpszClassName,         /* Title Class */
-		winClass.lpszClassName,			/* Title Text */
+		this->wiName,         /* Title Class */
+		this->wiName,			/* Title Text */
 		WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU | WS_VISIBLE | WS_OVERLAPPEDWINDOW,
 		startX,							/* X Start */
 		startY,							/* Y Start */
@@ -33,27 +31,21 @@ UIManager::WindowManager::WindowManager(HINSTANCE & hInstance, std::string wiNam
 		endY,							/* and height in pixels */
 		HWND_DESKTOP,					/* The window is a child-window to desktop */
 		NULL,							/* No menu */
-		winClass.hInstance,				/* Program Instance handler */
+		hInstance,				/* Program Instance handler */
 		NULL
 	);
 }
 
-int UIManager::WindowManager::build()
+void UIManager::WindowManager::setLocation(int xloc, int yloc)
 {
-	return 0;
-
-	//Pending to put here create
-
 }
 
-int UIManager::WindowManager::create(int nCmdShow)
+void UIManager::WindowManager::show()
 {
-	ShowWindow(hwnd, nCmdShow);
 	while (GetMessage(&msg, NULL, 0, 0)) {
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-	return (int)msg.wParam;
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)

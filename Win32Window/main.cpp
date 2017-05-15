@@ -4,6 +4,5 @@
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 	UIManager::WindowManager window = UIManager::WindowManager(hInstance);
-	window.build();
-	return window.create(nCmdShow);
+	window.show();
 }

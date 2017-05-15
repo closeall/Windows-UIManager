@@ -23,18 +23,21 @@ limitations under the License.*/
 class UIManager::WindowManager {
 private:
 	//Class data
+	HINSTANCE hInstance;
 	WNDCLASSEX winClass; /* Data structure for the windowclass */
 	MSG msg;
 	HWND hwnd;
 	//Window Data
-	std::string wiName;
-	int startX, startY = 50;
+	LPCSTR wiName;
+	int startX = 250;
+	int startY = 150;
 	int endX = 544;
 	int endY = 375;
 public:
 	WindowManager(HINSTANCE & hInstance, std::string wiName = "Window Name");
-	int build();
-	int create(int nCmdShow);
+	void setLocation(int xloc, int yloc);
+	void setSize(int xsize, int ysize);
+	void show();
 };
 
 #endif //#define _UI_MANAGER_NAMESPACE_WINDOW_MANAGER
