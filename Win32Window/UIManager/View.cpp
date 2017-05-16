@@ -12,18 +12,24 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.*/
 
-#ifndef _UI_MANAGER_INTERFACE_HEADER
-#define _UI_MANAGER_INTERFACE_HEADER
+#include "View.h"
 
-#include "Namespace.h"
-#include <thread>
+UIManager::View::View()
+{
+	vType = UIManager::TextView;
+}
 
-//Window Callbacks
-typedef std::function<void(HWND hwnd)> wCreateCallBack;
-typedef std::function<void(HWND hwnd)> wDestroyCallBack;
-typedef std::function<void(HWND hwnd, bool focused)> wFocusCallBack;
-typedef std::function<void(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)> wPersonalizedCallBack;
+UIManager::View::View(UIManager::ViewType view)
+{
+	vType = view;
+}
 
-//View Callbacks
+void UIManager::View::setType(UIManager::ViewType view)
+{
+	vType = view;
+}
 
-#endif //_UI_MANAGER_INTERFACE_HEADER
+void UIManager::View::setText(std::string text)
+{
+	vText = text;
+}

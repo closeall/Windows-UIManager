@@ -14,7 +14,10 @@ limitations under the License.*/
 
 #include "WindowManager.h"
 
-CallBack UIManager::WindowManager::onCreate;
+wCreateCallBack UIManager::WindowManager::onCreate;
+wFocusCallBack UIManager::WindowManager::onFocus;
+wDestroyCallBack UIManager::WindowManager::onDestroy;
+wPersonalizedCallBack UIManager::WindowManager::onMessageRec;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -25,7 +28,7 @@ void UIManager::WindowManager::createView()
 	//Create Window
 	this->wCreated = true;
 	hwnd = CreateWindowEx(
-		0,
+		ExwFlags,
 		this->wiName.c_str(),			/* Title Class */
 		this->wiName.c_str(),			/* Title Text */
 		wFlags,							/* Initial Flags */
@@ -48,7 +51,11 @@ void UIManager::WindowManager::createView()
 
 //Public
 //
-UIManager::WindowManager::WindowManager(HINSTANCE & hInstance, std::string wiName, int startX, int startY, int endX, int endY)
+UIManager::WindowManager::WindowManager() : hInstance(NULL)
+{
+}
+
+void UIManager::WindowManager::setInitialData(HINSTANCE & hInstance, std::string wiName, int startX, int startY, int endX, int endY)
 {
 	this->wiName = wiName;
 	this->hInstance = hInstance;
@@ -58,8 +65,9 @@ UIManager::WindowManager::WindowManager(HINSTANCE & hInstance, std::string wiNam
 	this->endY = endY;
 }
 
-UIManager::WindowManager::WindowManager() : hInstance(NULL)
+void UIManager::WindowManager::setHInstance(HINSTANCE hInstance)
 {
+	this->hInstance = hInstance;
 }
 
 void UIManager::WindowManager::setText(std::string text)
@@ -83,50 +91,134 @@ void UIManager::WindowManager::setSize(int xsize, int ysize)
 	}
 }
 
-void UIManager::WindowManager::setTopMost(boolean active)
+void UIManager::WindowManager::setVisible(bool visible)
 {
-	if (active) {
-		if (this->wCreated) {
-			SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+	if (!wCreated) {
+		if (visible) {
+			wFlags = wFlags | WS_VISIBLE;
 		} else {
-			wFlags = wFlags | WS_EX_TOPMOST;
-		}
-	}else {
-		if (this->wCreated) {
-			SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+			wFlags = wFlags & ~WS_VISIBLE;
 		}
 	}
 }
 
-void UIManager::WindowManager::build(CallBack callback)
+void UIManager::WindowManager::setStartState(UIManager::wStartState state)
 {
-	//Set Callback
+	switch(state) {
+		case UIManager::Maximized: {
+			wFlags = wFlags | WS_MAXIMIZE;
+			break;
+		}
+		case UIManager::Minimized: {
+			wFlags = wFlags | WS_MINIMIZE;
+			break;
+		}
+		default: {
+			break;
+		}
+	}
+}
+
+void UIManager::WindowManager::setCursor(HCURSOR cursor)
+{
+	wCursor = cursor;
+}
+
+void UIManager::WindowManager::setIcon(HICON icon)
+{
+	wIcon = icon;
+}
+
+void UIManager::WindowManager::setBackGround(HBRUSH brush)
+{
+	wbColor = brush;
+}
+
+void UIManager::WindowManager::allowMaximizeButton(bool allow)
+{
+	if (!wCreated) {
+		if (allow) {
+			wFlags = wFlags | WS_MAXIMIZEBOX;
+		}
+		else {
+			wFlags = wFlags & ~WS_MAXIMIZEBOX;
+		}
+	}
+}
+
+void UIManager::WindowManager::allowMinimizeButton(bool allow)
+{
+	if (!wCreated) {
+		if (allow) {
+			wFlags = wFlags | WS_MINIMIZEBOX;
+		}
+		else {
+			wFlags = wFlags & ~WS_MINIMIZEBOX;
+		}
+	}
+}
+
+void UIManager::WindowManager::allowResize(bool allow)
+{
+	if (!wCreated) {
+		if (allow) {
+			wFlags = wFlags | WS_THICKFRAME;
+		}
+		else {
+			wFlags = wFlags & ~WS_THICKFRAME;
+		}
+	}
+}
+
+void UIManager::WindowManager::setTopMost(bool active)
+{
+	if (!wCreated) {
+		if (active) {
+			ExwFlags = ExwFlags | WS_EX_TOPMOST;
+		}
+		else {
+			ExwFlags = ExwFlags & ~WS_EX_TOPMOST;
+		}
+	}
+}
+
+void UIManager::WindowManager::setOnCreate(wCreateCallBack callback)
+{
 	onCreate = callback;
+}
+
+void UIManager::WindowManager::setOnFocus(wFocusCallBack callback)
+{
+	onFocus = callback;
+}
+
+void UIManager::WindowManager::setOnDestroy(wDestroyCallBack callback)
+{
+	onDestroy = callback;
+}
+
+void UIManager::WindowManager::setPersonalizedHandler(wPersonalizedCallBack callback)
+{
+	onMessageRec = callback;
+}
+
+void UIManager::WindowManager::build()
+{
 	//Create Class
 	winClass.cbSize = sizeof(winClass);
 	winClass.hInstance = hInstance;
 	winClass.lpszClassName = this->wiName.c_str();
 	winClass.lpfnWndProc = WndProc; //Execution callback
 	//Load default editable ellements
-	winClass.hCursor = LoadCursor(0, IDC_ARROW);		/*Default*/
-	winClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);	/*Default*/		//Alt+Tab Dialog
-	winClass.hbrBackground = GetSysColorBrush(COLOR_3DFACE);
+	winClass.hCursor = wCursor;		/*Default*/
+	winClass.hIcon = wIcon;								/*Alt+Tab Dialog*/
+	winClass.hbrBackground = wbColor;
 	winClass.lpszMenuName = NULL;						/* No menu */
 	RegisterClassEx(&winClass);
 
 	//Create Window
 	createView();
 }
-
-void UIManager::WindowManager::show()
-{
-	
-}
-
-void UIManager::WindowManager::hide()
-{
-}
-
 
 LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -139,19 +231,32 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 			onCreate(hwnd);
 		break;
 	}
-
 	case WM_COMMAND:
 	{
 		//Por ahora no hay que tocar aquí
 		break;
 	}
-
-	case WM_DESTROY:
+	case WM_SETFOCUS: //Get Focus
 	{
-		//Aquí se destruye el form
+		if (onFocus != NULL)
+			onFocus(hwnd, true);
+		break;
+	}
+	case WM_KILLFOCUS: //Lost Focus
+	{
+		if (onFocus != NULL)
+			onFocus(hwnd, false);
+		break;
+	}
+	case WM_DESTROY: //Form Destroyed
+	{
+		if (onDestroy != NULL)
+			onDestroy(hwnd);
 		PostQuitMessage(0);
 		break;
 	}
 	}
+	if (onMessageRec != NULL)
+		onMessageRec(hwnd, msg, wParam, lParam);
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }

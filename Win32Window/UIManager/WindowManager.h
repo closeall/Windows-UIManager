@@ -23,6 +23,8 @@ limitations under the License.*/
 #include "Namespace.h"
 #include "Interface.h"
 
+enum UIManager::wStartState { Normal, Maximized, Minimized};
+
 class UIManager::WindowManager {
 private:
 	//Class data
@@ -30,10 +32,14 @@ private:
 	WNDCLASSEX winClass; /* Data structure for the windowclass */
 	MSG msg;
 	HWND hwnd;
-	boolean wCreated = false;
+	bool wCreated = false;
 	//Window Data
 	std::string wiName;
-	DWORD wFlags = WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU | WS_VISIBLE | WS_OVERLAPPEDWINDOW;
+	DWORD ExwFlags;
+	DWORD wFlags = WS_VISIBLE | WS_SYSMENU | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_THICKFRAME;
+	HCURSOR wCursor = LoadCursor(0, IDC_ARROW);
+	HICON wIcon = LoadIcon(NULL, IDI_APPLICATION);
+	HBRUSH wbColor = GetSysColorBrush(COLOR_3DFACE);
 	int startX;
 	int startY;
 	int endX;
@@ -42,18 +48,39 @@ private:
 	void createView();
 	static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 public:
-	//Private Callback
-	static CallBack onCreate;
-	//Public Functions
-	WindowManager(HINSTANCE & hInstance, std::string wiName = "Window Name", int startX = 300, int startY = 200, int endX = 120, int endY = 400);
+	//Callback
+	//
+	static wCreateCallBack onCreate;
+	static wFocusCallBack onFocus;
+	static wDestroyCallBack onDestroy;
+	static wPersonalizedCallBack onMessageRec;
+	//Creation Functions
+	//
 	WindowManager();
+	//Window
+	void setInitialData(HINSTANCE & hInstance, std::string wiName = "Window Name", int startX = 300, int startY = 200, int endX = 120, int endY = 400);
+	void setHInstance(HINSTANCE hInstance);
 	void setText(std::string text);
 	void setLocation(int xloc, int yloc);
 	void setSize(int xsize, int ysize);
-	void setTopMost(boolean active);
-	void build(CallBack callback = NULL);
-	void show();
-	void hide();
+	void setVisible(bool visible);
+	void setTopMost(bool active);
+	void setStartState(UIManager::wStartState state);
+	//Borders & Tool Bar
+	void setCursor(HCURSOR cursor);
+	void setIcon(HICON icon);
+	void setBackGround(HBRUSH brush);
+	void allowMaximizeButton(bool allow);
+	void allowMinimizeButton(bool allow);
+	void allowResize(bool allow);
+	//Others
+	void setOnCreate(wCreateCallBack callback = NULL);
+	void setOnFocus(wFocusCallBack callback = NULL);
+	void setOnDestroy(wDestroyCallBack callback = NULL);
+	void setPersonalizedHandler(wPersonalizedCallBack callback = NULL);
+	void build();
+	//Runtime Functions
+	//
 };
 
 #endif //#define _UI_MANAGER_WINDOW_MANAGER_HEADER

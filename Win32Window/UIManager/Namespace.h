@@ -6,8 +6,12 @@
 #include <windows.h> //Win32 API Lib
 
 namespace UIManager {
-	class WindowManager; // Just Window Manager
-	class TextView;
+	//Window
+	class WindowManager;
+	enum wStartState;
+	//Views
+	class View;
+	enum ViewType;
 }
 
 #endif //_UI_MANAGER_NAMESPACE_HEADER

@@ -3,35 +3,42 @@
 //Lib
 #include "UIManager\Interface.h"
 #include "UIManager\WindowManager.h"
-//Views
-#include "UIManager\Views\TextView.h"
+#include "UIManager\View.h"
 
 //CallBacks
 void onCreate(HWND hwnd);
+void onFocus(HWND hwnd, bool focused);
+void onDestroy(HWND hwnd);
 
-//If you want access
-UIManager::WindowManager *manager;
-
+//Global or reference for access from inside childs with Manager control
+UIManager::WindowManager window;
+//Define Window data
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
-	UIManager::WindowManager window = UIManager::WindowManager(hInstance, "Prueba de Ventana", 100, 100);
-	manager = &window;
-	window.setSize(400, 500);
-	window.setTopMost(true);
-	window.build(onCreate);
+	window.setInitialData(hInstance, "Ventana de Prueba", 200, 100);
+	window.setSize(400, 480);
+	//Callbacks
+	window.setOnCreate(onCreate);
+	window.setOnFocus(onFocus);
+	window.setOnDestroy(onDestroy);
+	window.build(); //Build always at the end of the int
 }
 
 void onCreate(HWND hwnd) {
-	//Stuff that can be done previous to the build too
-
-	//Execute shitty stuff
-	//MessageBox(0, "Mensaje de Bienvenida", "Título del mensaje", MB_OK);
 	//Add views
-	UIManager::TextView textView1;
-	textView1.setText("Esto es un mensaje");
-	textView1.setLocation(50, 50);
-	textView1.setSize(150, 25);
+	UIManager::View textView = UIManager::View(UIManager::TextView);
+	textView.setText("Esto es un mensaje");
 	CreateWindowW(L"Static", L"Esto es un mensaje",
 		WS_CHILD | WS_VISIBLE,
 		50, 50, 150, 25,
 		hwnd, (HMENU)1, NULL, NULL);
+}
+
+void onFocus(HWND hwnd, bool focused) {
+	if (focused) {
+		//MessageBox(0, "Hello!", "I see U", MB_OK);
+	}
+}
+
+void onDestroy(HWND hwnd) {
+	MessageBox(0, "Good Bye!", "I see U", MB_OK);
 }
