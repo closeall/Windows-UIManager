@@ -19,6 +19,9 @@ wFocusCallBack UIManager::WindowManager::onFocus;
 wDestroyCallBack UIManager::WindowManager::onDestroy;
 wPersonalizedCallBack UIManager::WindowManager::onMessageRec;
 
+HWND UIManager::WindowManager::wHWND;
+std::vector<HWND> UIManager::WindowManager::vHWND;
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 //Private
@@ -27,7 +30,7 @@ void UIManager::WindowManager::createView()
 {
 	//Create Window
 	this->wCreated = true;
-	hwnd = CreateWindowEx(
+	wHWND = CreateWindowEx(
 		ExwFlags,
 		this->wiName.c_str(),			/* Title Class */
 		this->wiName.c_str(),			/* Title Text */
@@ -84,7 +87,7 @@ void UIManager::WindowManager::setLocation(int xloc, int yloc)
 void UIManager::WindowManager::setSize(int xsize, int ysize)
 {
 	if (wCreated) {
-		SetWindowPos(hwnd, 0, 0, 0, xsize, ysize, SWP_NOMOVE);
+		SetWindowPos(wHWND, 0, 0, 0, xsize, ysize, SWP_NOMOVE);
 	} else {
 		endX = xsize;
 		endY = ysize;
@@ -222,10 +225,10 @@ void UIManager::WindowManager::build()
 
 void UIManager::WindowManager::addView(UIManager::View view)
 {
-	CreateWindowW(L"Static", FormatFactory::StringToWString(view.vText).c_str(),
+	vHWND.push_back(CreateWindowW(L"Static", FormatFactory::StringToWString(view.vText).c_str(),
 		WS_CHILD | WS_VISIBLE,
 		view.startX, view.startY, view.endX, view.endY,
-		hwnd, (HMENU)1, NULL, NULL);
+		wHWND, (HMENU)vHWND.size(), NULL, NULL));
 }
 
 LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -235,6 +238,7 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 	{
 	case WM_CREATE: //On Window Create
 	{
+		wHWND = hwnd;
 		if (onCreate != NULL)
 			onCreate(hwnd);
 		break;

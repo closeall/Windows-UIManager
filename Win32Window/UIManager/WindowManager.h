@@ -18,6 +18,7 @@ limitations under the License.*/
 #include <Windows.h>
 #include <iostream>
 #include <thread>
+#include <vector>
 #include <string>
 
 #include "Namespace.h"
@@ -34,7 +35,8 @@ private:
 	HINSTANCE hInstance;
 	WNDCLASSEX winClass; /* Data structure for the windowclass */
 	MSG msg;
-	HWND hwnd;
+	static HWND wHWND;
+	static std::vector<HWND> vHWND;
 	bool wCreated = false;
 	//Window Data
 	std::string wiName;

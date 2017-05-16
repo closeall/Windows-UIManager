@@ -5,7 +5,7 @@
 #include "UIManager\WindowManager.h"
 #include "UIManager\View.h"
 
-//CallBacks
+//Window CallBacks
 void onCreate(HWND hwnd);
 void onFocus(HWND hwnd, bool focused);
 void onDestroy(HWND hwnd);
@@ -29,6 +29,11 @@ void onCreate(HWND hwnd) {
 	UIManager::View textView = UIManager::View(UIManager::TextView);
 	textView.setText("Esto es un mensaje");
 	window.addView(textView);
+
+	UIManager::View textView1 = UIManager::View(UIManager::TextView);
+	textView1.setText("Hola Erni");
+	textView1.setLocation(70, 70);
+	window.addView(textView1);
 }
 
 void onFocus(HWND hwnd, bool focused) {
@@ -38,5 +43,5 @@ void onFocus(HWND hwnd, bool focused) {
 }
 
 void onDestroy(HWND hwnd) {
-	MessageBox(0, "Good Bye!", "I see U", MB_OK);
+	MessageBox(0, "Good Bye!", "see U", MB_OK);
 }
