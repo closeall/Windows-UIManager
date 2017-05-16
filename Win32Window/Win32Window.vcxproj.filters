@@ -16,21 +16,30 @@
     <Filter Include="Archivos de código fuente\UIManager">
       <UniqueIdentifier>{eb1deeab-2186-42e2-be47-1482af60a112}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de código fuente\UIManager\Views">
+      <UniqueIdentifier>{493404d4-da4c-4b69-8398-1c564daa79b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
-    <ClCompile Include="WindowManager.cpp">
+    <ClCompile Include="UIManager\WindowManager.cpp">
       <Filter>Archivos de código fuente\UIManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="WindowManager.h">
+    <ClInclude Include="UIManager\Namespace.h">
       <Filter>Archivos de código fuente\UIManager</Filter>
     </ClInclude>
-    <ClInclude Include="Namespace.h">
+    <ClInclude Include="UIManager\WindowManager.h">
       <Filter>Archivos de código fuente\UIManager</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager\Interface.h">
+      <Filter>Archivos de código fuente\UIManager</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager\Views\MessageBox.h">
+      <Filter>Archivos de código fuente\UIManager\Views</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -6,7 +6,7 @@
 #include <windows.h> //Win32 API Lib
 
 namespace UIManager {
-	class WindowManager; // just tell the compiler to expect a class def
+	class WindowManager; // Just Window Manager
 }
 
 #endif //_UI_MANAGER_NAMESPACE_HEADER

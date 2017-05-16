@@ -12,13 +12,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.*/
 
-#ifndef _UI_MANAGER_NAMESPACE_WINDOW_MANAGER
-#define _UI_MANAGER_NAMESPACE_WINDOW_MANAGER
+#ifndef _UI_MANAGER_WINDOW_MANAGER_HEADER
+#define _UI_MANAGER_WINDOW_MANAGER_HEADER
 
 #include <Windows.h>
-#include "Namespace.h"
 #include <iostream>
+#include <thread>
 #include <string>
+
+#include "Namespace.h"
+#include "Interface.h"
 
 class UIManager::WindowManager {
 private:
@@ -28,16 +31,26 @@ private:
 	MSG msg;
 	HWND hwnd;
 	//Window Data
-	LPCSTR wiName;
-	int startX = 250;
-	int startY = 150;
-	int endX = 544;
-	int endY = 375;
+	std::string wiName;
+	int startX;
+	int startY;
+	int endX;
+	int endY;
+	//Private functions
+	void createView();
+	static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 public:
-	WindowManager(HINSTANCE & hInstance, std::string wiName = "Window Name");
+	//Private Callback
+	static CallBack onCreate;
+	//Public Functions
+	WindowManager(HINSTANCE & hInstance, std::string wiName = "Window Name", int startX = 300, int startY = 200, int endX = 120, int endY = 400);
+	void setText(std::string text);
 	void setLocation(int xloc, int yloc);
 	void setSize(int xsize, int ysize);
+	void build(CallBack callback = NULL);
+	HWND getHWND();
 	void show();
+	void hide();
 };
 
-#endif //#define _UI_MANAGER_NAMESPACE_WINDOW_MANAGER
+#endif //#define _UI_MANAGER_WINDOW_MANAGER_HEADER

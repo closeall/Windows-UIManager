@@ -112,11 +112,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="WindowManager.cpp" />
+    <ClCompile Include="UIManager\WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Namespace.h" />
-    <ClInclude Include="WindowManager.h" />
+    <ClInclude Include="UIManager\Interface.h" />
+    <ClInclude Include="UIManager\Namespace.h" />
+    <ClInclude Include="UIManager\Views\MessageBox.h" />
+    <ClInclude Include="UIManager\WindowManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
