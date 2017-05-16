@@ -18,6 +18,6 @@ limitations under the License.*/
 #include "Namespace.h"
 #include <thread>
 
-typedef std::function<void()> CallBack;
+typedef std::function<void(HWND hwnd)> CallBack;
 
 #endif //_UI_MANAGER_INTERFACE_HEADER

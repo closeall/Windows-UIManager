@@ -14,6 +14,8 @@ limitations under the License.*/
 
 #include "WindowManager.h"
 
+CallBack UIManager::WindowManager::onCreate;
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 //Private
@@ -93,11 +95,6 @@ void UIManager::WindowManager::build(CallBack callback)
 	createView();
 }
 
-HWND UIManager::WindowManager::getHWND()
-{
-	return hwnd;
-}
-
 void UIManager::WindowManager::show()
 {
 	
@@ -115,7 +112,7 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 	{
 	case WM_CREATE: //On Window Create
 	{
-		onCreate();
+		onCreate(hwnd);
 		break;
 	}
 

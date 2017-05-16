@@ -48,7 +48,6 @@ public:
 	void setLocation(int xloc, int yloc);
 	void setSize(int xsize, int ysize);
 	void build(CallBack callback = NULL);
-	HWND getHWND();
 	void show();
 	void hide();
 };
