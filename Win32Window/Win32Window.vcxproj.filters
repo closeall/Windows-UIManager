@@ -16,6 +16,9 @@
     <Filter Include="Archivos de código fuente\UIManager">
       <UniqueIdentifier>{eb1deeab-2186-42e2-be47-1482af60a112}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de código fuente\UIManager\Util">
+      <UniqueIdentifier>{55b56170-cdf6-474f-8f0d-1c9bb91cee92}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -26,6 +29,9 @@
     </ClCompile>
     <ClCompile Include="UIManager\View.cpp">
       <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager\Util\FormatFactory.cpp">
+      <Filter>Archivos de código fuente\UIManager\Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -40,6 +46,9 @@
     </ClInclude>
     <ClInclude Include="UIManager\View.h">
       <Filter>Archivos de código fuente\UIManager</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager\Util\FormatFactory.h">
+      <Filter>Archivos de código fuente\UIManager\Util</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -220,6 +220,14 @@ void UIManager::WindowManager::build()
 	createView();
 }
 
+void UIManager::WindowManager::addView(UIManager::View view)
+{
+	CreateWindowW(L"Static", FormatFactory::StringToWString(view.vText).c_str(),
+		WS_CHILD | WS_VISIBLE,
+		view.startX, view.startY, view.endX, view.endY,
+		hwnd, (HMENU)1, NULL, NULL);
+}
+
 LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 

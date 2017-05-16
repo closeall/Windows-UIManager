@@ -22,6 +22,9 @@ limitations under the License.*/
 
 #include "Namespace.h"
 #include "Interface.h"
+#include "View.h"
+
+#include "Util\FormatFactory.h"
 
 enum UIManager::wStartState { Normal, Maximized, Minimized};
 
@@ -81,6 +84,7 @@ public:
 	void build();
 	//Runtime Functions
 	//
+	void addView(UIManager::View view);
 };
 
 #endif //#define _UI_MANAGER_WINDOW_MANAGER_HEADER

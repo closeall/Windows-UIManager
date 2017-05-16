@@ -25,6 +25,7 @@ limitations under the License.*/
 enum UIManager::ViewType { TextView, EditText, Button, ListBox, ComboBox };
 
 class UIManager::View {
+	friend class WindowManager;
 private:
 	UIManager::ViewType vType;
 	std::string vText;
@@ -34,9 +35,11 @@ private:
 	int endY;
 public:
 	View();
-	View(UIManager::ViewType view);
+	View(UIManager::ViewType view, int startX = 50, int startY = 50, int endX = 150, int endY = 25);
 	void setType(UIManager::ViewType view);
 	void setText(std::string text);
+	void setLocation(int xloc, int yloc);
+	void setSize(int xsize, int ysize);
 };
 
 #endif //#define _UI_MANAGER_VIEW_HEADER

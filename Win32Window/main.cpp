@@ -25,12 +25,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 void onCreate(HWND hwnd) {
 	//Add views
+	//TOOO EARLYYYY!!!!
 	UIManager::View textView = UIManager::View(UIManager::TextView);
 	textView.setText("Esto es un mensaje");
-	CreateWindowW(L"Static", L"Esto es un mensaje",
-		WS_CHILD | WS_VISIBLE,
-		50, 50, 150, 25,
-		hwnd, (HMENU)1, NULL, NULL);
+	window.addView(textView);
 }
 
 void onFocus(HWND hwnd, bool focused) {

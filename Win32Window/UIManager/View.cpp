@@ -19,9 +19,13 @@ UIManager::View::View()
 	vType = UIManager::TextView;
 }
 
-UIManager::View::View(UIManager::ViewType view)
+UIManager::View::View(UIManager::ViewType view, int startX, int startY, int endX, int endY)
 {
 	vType = view;
+	this->startX = startX;
+	this->startY = startX;
+	this->endX = endX;
+	this->endY = endY;
 }
 
 void UIManager::View::setType(UIManager::ViewType view)
@@ -32,4 +36,16 @@ void UIManager::View::setType(UIManager::ViewType view)
 void UIManager::View::setText(std::string text)
 {
 	vText = text;
+}
+
+void UIManager::View::setLocation(int xloc, int yloc)
+{
+	this->startX = xloc;
+	this->startY = yloc;
+}
+
+void UIManager::View::setSize(int xsize, int ysize)
+{
+	this->endX = xsize;
+	this->endY = ysize;
 }
