@@ -30,8 +30,10 @@ private:
 	WNDCLASSEX winClass; /* Data structure for the windowclass */
 	MSG msg;
 	HWND hwnd;
+	boolean wCreated = false;
 	//Window Data
 	std::string wiName;
+	DWORD wFlags = WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU | WS_VISIBLE | WS_OVERLAPPEDWINDOW;
 	int startX;
 	int startY;
 	int endX;
@@ -44,9 +46,11 @@ public:
 	static CallBack onCreate;
 	//Public Functions
 	WindowManager(HINSTANCE & hInstance, std::string wiName = "Window Name", int startX = 300, int startY = 200, int endX = 120, int endY = 400);
+	WindowManager();
 	void setText(std::string text);
 	void setLocation(int xloc, int yloc);
 	void setSize(int xsize, int ysize);
+	void setTopMost(boolean active);
 	void build(CallBack callback = NULL);
 	void show();
 	void hide();

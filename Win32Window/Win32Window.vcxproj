@@ -112,12 +112,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="UIManager\Views\TextView.cpp" />
     <ClCompile Include="UIManager\WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UIManager\Interface.h" />
     <ClInclude Include="UIManager\Namespace.h" />
-    <ClInclude Include="UIManager\Views\MessageBox.h" />
+    <ClInclude Include="UIManager\Views\TextView.h" />
     <ClInclude Include="UIManager\WindowManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

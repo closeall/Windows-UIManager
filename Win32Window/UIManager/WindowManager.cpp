@@ -23,11 +23,12 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 void UIManager::WindowManager::createView()
 {
 	//Create Window
+	this->wCreated = true;
 	hwnd = CreateWindowEx(
 		0,
 		this->wiName.c_str(),			/* Title Class */
 		this->wiName.c_str(),			/* Title Text */
-		WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU | WS_VISIBLE | WS_OVERLAPPEDWINDOW,							/* Initial Flags */
+		wFlags,							/* Initial Flags */
 		startX,							/* X Start */
 		startY,							/* Y Start */
 		endX,							/* The programs width */
@@ -57,6 +58,10 @@ UIManager::WindowManager::WindowManager(HINSTANCE & hInstance, std::string wiNam
 	this->endY = endY;
 }
 
+UIManager::WindowManager::WindowManager() : hInstance(NULL)
+{
+}
+
 void UIManager::WindowManager::setText(std::string text)
 {
 	wiName = text;
@@ -70,15 +75,33 @@ void UIManager::WindowManager::setLocation(int xloc, int yloc)
 
 void UIManager::WindowManager::setSize(int xsize, int ysize)
 {
-	endX = xsize;
-	endY = ysize;
+	if (wCreated) {
+		SetWindowPos(hwnd, 0, 0, 0, xsize, ysize, SWP_NOMOVE);
+	} else {
+		endX = xsize;
+		endY = ysize;
+	}
+}
+
+void UIManager::WindowManager::setTopMost(boolean active)
+{
+	if (active) {
+		if (this->wCreated) {
+			SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+		} else {
+			wFlags = wFlags | WS_EX_TOPMOST;
+		}
+	}else {
+		if (this->wCreated) {
+			SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+		}
+	}
 }
 
 void UIManager::WindowManager::build(CallBack callback)
 {
 	//Set Callback
-	if (callback != NULL)
-		onCreate = callback;
+	onCreate = callback;
 	//Create Class
 	winClass.cbSize = sizeof(winClass);
 	winClass.hInstance = hInstance;
@@ -112,7 +135,8 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 	{
 	case WM_CREATE: //On Window Create
 	{
-		onCreate(hwnd);
+		if (onCreate != NULL)
+			onCreate(hwnd);
 		break;
 	}
 

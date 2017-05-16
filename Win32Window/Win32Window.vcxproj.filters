@@ -27,6 +27,9 @@
     <ClCompile Include="UIManager\WindowManager.cpp">
       <Filter>Archivos de código fuente\UIManager</Filter>
     </ClCompile>
+    <ClCompile Include="UIManager\Views\TextView.cpp">
+      <Filter>Archivos de código fuente\UIManager\Views</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UIManager\Namespace.h">
@@ -38,7 +41,7 @@
     <ClInclude Include="UIManager\Interface.h">
       <Filter>Archivos de código fuente\UIManager</Filter>
     </ClInclude>
-    <ClInclude Include="UIManager\Views\MessageBox.h">
+    <ClInclude Include="UIManager\Views\TextView.h">
       <Filter>Archivos de código fuente\UIManager\Views</Filter>
     </ClInclude>
   </ItemGroup>

@@ -7,6 +7,7 @@
 
 namespace UIManager {
 	class WindowManager; // Just Window Manager
+	class TextView;
 }
 
 #endif //_UI_MANAGER_NAMESPACE_HEADER
