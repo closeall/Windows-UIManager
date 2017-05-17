@@ -25,5 +25,6 @@ typedef std::function<void(HWND hwnd, bool focused)> wFocusCallBack;
 typedef std::function<void(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)> wPersonalizedCallBack;
 
 //View Callbacks
+typedef std::function<void(HWND view)> vOnClick;
 
 #endif //_UI_MANAGER_INTERFACE_HEADER

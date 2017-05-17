@@ -33,6 +33,9 @@ private:
 	int startY;
 	int endX;
 	int endY;
+	//Callback
+	//
+	static vOnClick onClick;
 public:
 	View();
 	View(UIManager::ViewType view, int startX = 50, int startY = 50, int endX = 150, int endY = 25);
@@ -40,6 +43,8 @@ public:
 	void setText(std::string text);
 	void setLocation(int xloc, int yloc);
 	void setSize(int xsize, int ysize);
+	//Others
+	void setOnClick(vOnClick callback);
 };
 
 #endif //#define _UI_MANAGER_VIEW_HEADER

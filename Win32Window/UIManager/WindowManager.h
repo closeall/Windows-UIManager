@@ -26,8 +26,13 @@ limitations under the License.*/
 #include "View.h"
 
 #include "Util\FormatFactory.h"
+#include "Util\ViewHandler.h"
 
 enum UIManager::wStartState { Normal, Maximized, Minimized};
+struct vObject{
+	HWND manager;
+	UIManager::View view;
+};
 
 class UIManager::WindowManager {
 private:
@@ -36,7 +41,7 @@ private:
 	WNDCLASSEX winClass; /* Data structure for the windowclass */
 	MSG msg;
 	static HWND wHWND;
-	static std::vector<HWND> vHWND;
+	static std::vector<vObject> vObjects;
 	bool wCreated = false;
 	//Window Data
 	std::string wiName;
@@ -52,13 +57,13 @@ private:
 	//Private functions
 	void createView();
 	static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-public:
 	//Callback
 	//
 	static wCreateCallBack onCreate;
 	static wFocusCallBack onFocus;
 	static wDestroyCallBack onDestroy;
 	static wPersonalizedCallBack onMessageRec;
+public:
 	//Creation Functions
 	//
 	WindowManager();

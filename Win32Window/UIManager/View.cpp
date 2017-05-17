@@ -14,6 +14,8 @@ limitations under the License.*/
 
 #include "View.h"
 
+vOnClick UIManager::View::onClick;
+
 UIManager::View::View()
 {
 	vType = UIManager::TextView;
@@ -48,4 +50,9 @@ void UIManager::View::setSize(int xsize, int ysize)
 {
 	this->endX = xsize;
 	this->endY = ysize;
+}
+
+void UIManager::View::setOnClick(vOnClick callback)
+{
+	onClick = callback;
 }

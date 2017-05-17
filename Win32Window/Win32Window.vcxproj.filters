@@ -27,11 +27,14 @@
     <ClCompile Include="UIManager\WindowManager.cpp">
       <Filter>Archivos de código fuente\UIManager</Filter>
     </ClCompile>
-    <ClCompile Include="UIManager\View.cpp">
-      <Filter>Archivos de código fuente</Filter>
-    </ClCompile>
     <ClCompile Include="UIManager\Util\FormatFactory.cpp">
       <Filter>Archivos de código fuente\UIManager\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager\Util\ViewHandler.cpp">
+      <Filter>Archivos de código fuente\UIManager\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager\View.cpp">
+      <Filter>Archivos de código fuente\UIManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -48,6 +51,9 @@
       <Filter>Archivos de código fuente\UIManager</Filter>
     </ClInclude>
     <ClInclude Include="UIManager\Util\FormatFactory.h">
+      <Filter>Archivos de código fuente\UIManager\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager\Util\ViewHandler.h">
       <Filter>Archivos de código fuente\UIManager\Util</Filter>
     </ClInclude>
   </ItemGroup>

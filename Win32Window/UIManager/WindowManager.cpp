@@ -20,7 +20,7 @@ wDestroyCallBack UIManager::WindowManager::onDestroy;
 wPersonalizedCallBack UIManager::WindowManager::onMessageRec;
 
 HWND UIManager::WindowManager::wHWND;
-std::vector<HWND> UIManager::WindowManager::vHWND;
+std::vector<vObject> UIManager::WindowManager::vObjects;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -225,10 +225,14 @@ void UIManager::WindowManager::build()
 
 void UIManager::WindowManager::addView(UIManager::View view)
 {
-	vHWND.push_back(CreateWindowW(L"Static", FormatFactory::StringToWString(view.vText).c_str(),
+	vObject object;
+	object.view = view;
+	std::string type = vh::getView(view.vType);
+	object.manager = CreateWindowW(FormatFactory::StringToWString(type).c_str(), FormatFactory::StringToWString(view.vText).c_str(),
 		WS_CHILD | WS_VISIBLE,
 		view.startX, view.startY, view.endX, view.endY,
-		wHWND, (HMENU)vHWND.size(), NULL, NULL));
+		wHWND, (HMENU)vObjects.size(), NULL, NULL);
+	vObjects.push_back(object);
 }
 
 LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -243,9 +247,11 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 			onCreate(hwnd);
 		break;
 	}
-	case WM_COMMAND:
+	case WM_COMMAND: //Command execution
 	{
-		//Por ahora no hay que tocar aquí
+		vObject object = vObjects.at(wParam);
+		if (object.view.onClick != NULL)
+			object.view.onClick(object.manager);
 		break;
 	}
 	case WM_SETFOCUS: //Get Focus
