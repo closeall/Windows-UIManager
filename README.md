@@ -1,6 +1,6 @@
 # About the project
-This project has been made with the idea of simplifying the creation of any kind of form in windows with the help
-This is an alpha version of the project wich will serve to determinate the structore of the proyect.
+This project has been made with the idea of simplifying the creation of any kind of form in windows with the help of the Win32Api
+This is an alpha version of the project wich will serve to determinate the structure of the proyect.
 At this time, it only allows creating a form and TextView/Buttons but I hope to add more functionalities in the future.
 
 # How to use it!
