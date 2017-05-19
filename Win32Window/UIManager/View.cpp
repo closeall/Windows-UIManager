@@ -14,7 +14,7 @@ limitations under the License.*/
 
 #include "View.h"
 
-vOnClick UIManager::View::onClick;
+std::vector<vOnClick> UIManager::View::onClick;
 
 UIManager::View::View()
 {
@@ -54,5 +54,5 @@ void UIManager::View::setSize(int xsize, int ysize)
 
 void UIManager::View::setOnClick(vOnClick callback)
 {
-	onClick = callback;
+	onClick.push_back(callback);
 }

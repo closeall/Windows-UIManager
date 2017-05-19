@@ -250,8 +250,10 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 	case WM_COMMAND: //Command execution
 	{
 		vObject object = vObjects.at(wParam);
-		if (object.view.onClick != NULL)
-			object.view.onClick(object.manager);
+		if (object.view.onClick.size() != 0) {
+			vOnClick btton = object.view.onClick.at(wParam - 1);
+			btton(object.manager);
+		}
 		break;
 	}
 	case WM_SETFOCUS: //Get Focus

@@ -18,6 +18,7 @@ limitations under the License.*/
 #include <Windows.h>
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "Namespace.h"
 #include "Interface.h"
@@ -35,7 +36,7 @@ private:
 	int endY;
 	//Callback
 	//
-	static vOnClick onClick;
+	static std::vector<vOnClick> onClick;
 public:
 	View();
 	View(UIManager::ViewType view, int startX = 50, int startY = 50, int endX = 150, int endY = 25);
