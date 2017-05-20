@@ -1,4 +1,4 @@
-/*Copyright 2017 Ricardo Moya Mejias
+/*Copyright 2017 Onelio
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -76,21 +76,26 @@ void UIManager::WindowManager::setHInstance(HINSTANCE hInstance)
 void UIManager::WindowManager::setText(std::string text)
 {
 	wiName = text;
+	if (wCreated) {
+		SetWindowText(wHWND, text.c_str());
+	}
 }
 
 void UIManager::WindowManager::setLocation(int xloc, int yloc)
 {
 	startX = xloc;
 	startY = yloc;
+	if (wCreated) {
+		SetWindowPos(wHWND, NULL, startX, startY, 0, 0, SWP_NOSIZE);
+	}
 }
 
 void UIManager::WindowManager::setSize(int xsize, int ysize)
 {
+	endX = xsize;
+	endY = ysize;
 	if (wCreated) {
-		SetWindowPos(wHWND, 0, 0, 0, xsize, ysize, SWP_NOMOVE);
-	} else {
-		endX = xsize;
-		endY = ysize;
+		SetWindowPos(wHWND, NULL, 0, 0, xsize, ysize, SWP_NOMOVE);
 	}
 }
 
@@ -101,6 +106,14 @@ void UIManager::WindowManager::setVisible(bool visible)
 			wFlags = wFlags | WS_VISIBLE;
 		} else {
 			wFlags = wFlags & ~WS_VISIBLE;
+		}
+	}
+	else {
+		if (visible) {
+			SetWindowPos(wHWND, NULL, 0, 0, 9, 9, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+		}
+		else {
+			SetWindowPos(wHWND, NULL, 0, 0, 9, 9, SWP_NOMOVE | SWP_NOSIZE | SWP_HIDEWINDOW);
 		}
 	}
 }
@@ -119,6 +132,20 @@ void UIManager::WindowManager::setStartState(UIManager::wStartState state)
 		default: {
 			break;
 		}
+	}
+}
+
+void UIManager::WindowManager::makeTop()
+{
+	if (wCreated) {
+		SetWindowPos(wHWND, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+	}
+}
+
+void UIManager::WindowManager::makeBottom()
+{
+	if (wCreated) {
+		SetWindowPos(wHWND, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 	}
 }
 

@@ -1,4 +1,4 @@
-/*Copyright 2017 Ricardo Moya Mejias
+/*Copyright 2017 Onelio
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -76,6 +76,8 @@ public:
 	void setVisible(bool visible);
 	void setTopMost(bool active);
 	void setStartState(UIManager::wStartState state);
+	void makeTop();
+	void makeBottom();
 	//Borders & Tool Bar
 	void setCursor(HCURSOR cursor);
 	void setIcon(HICON icon);

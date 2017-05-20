@@ -37,7 +37,7 @@ void onCreate(HWND hwnd) {
 }
 
 void onButtonClick(HWND object) {
-	MessageBox(0, "Hello", "Message", MB_OK);
+	window.makeBottom();
 }
 
 void onDestroy(HWND hwnd) {
