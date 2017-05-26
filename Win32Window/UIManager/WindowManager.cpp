@@ -20,6 +20,7 @@ wDestroyCallBack UIManager::WindowManager::onDestroy;
 wPersonalizedCallBack UIManager::WindowManager::onMessageRec;
 
 HWND UIManager::WindowManager::wHWND;
+bool UIManager::WindowManager::wDragAndMove;
 std::vector<vObject> UIManager::WindowManager::vObjects;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -56,6 +57,7 @@ void UIManager::WindowManager::createView()
 //
 UIManager::WindowManager::WindowManager() : hInstance(NULL)
 {
+	wDragAndMove = false;
 }
 
 void UIManager::WindowManager::setInitialData(HINSTANCE & hInstance, std::string wiName, int startX, int startY, int endX, int endY)
@@ -114,6 +116,26 @@ void UIManager::WindowManager::setVisible(bool visible)
 		}
 		else {
 			SetWindowPos(wHWND, NULL, 0, 0, 9, 9, SWP_NOMOVE | SWP_NOSIZE | SWP_HIDEWINDOW);
+		}
+	}
+}
+
+void UIManager::WindowManager::setEnabled(bool enabled)
+{
+	if (!wCreated) { //WS_DISABLED
+		if (enabled) {
+			wFlags = wFlags | WS_DISABLED;
+		}
+		else {
+			wFlags = wFlags & ~WS_DISABLED;
+		}
+	}
+	else {
+		if (enabled) {
+			EnableWindow(wHWND, true);
+		}
+		else {
+			EnableWindow(wHWND, false);
 		}
 	}
 }
@@ -209,9 +231,28 @@ void UIManager::WindowManager::allowResize(bool allow)
 	}
 }
 
+void UIManager::WindowManager::disallowTitleBar(bool allow)
+{
+	if (!wCreated) {
+		if (allow) {
+			wFlags = wFlags | WS_POPUPWINDOW;
+		}
+		else {
+			wFlags = wFlags & ~WS_POPUPWINDOW;
+		}
+	}
+}
+
+void UIManager::WindowManager::allowDragAndMove(bool allow)
+{
+	wDragAndMove = allow;
+}
+
 void UIManager::WindowManager::test()
 {
-	createView();
+	//createView();
+	SetWindowLong(wHWND, GWL_EXSTYLE, GetWindowLong(wHWND, GWL_EXSTYLE) | WS_EX_LAYERED);
+	SetLayeredWindowAttributes(wHWND, RGB(255, 0, 0), 0, LWA_COLORKEY);
 }
 
 void UIManager::WindowManager::setTopMost(bool active)
@@ -340,6 +381,12 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 		if (onFocus != NULL)
 			onFocus(hwnd, false);
 		break;
+	}
+	case WM_NCHITTEST: 
+	{
+		LRESULT hit = DefWindowProc(wHWND, msg, wParam, lParam);
+		if (hit == HTCLIENT && wDragAndMove) hit = HTCAPTION;
+		return hit;
 	}
 	case WM_DESTROY: //Form Destroyed
 	{

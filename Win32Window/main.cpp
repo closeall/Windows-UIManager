@@ -23,6 +23,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	window.setInitialData(hInstance, "Ventana de Prueba", 200, 100);
 	window.setSize(400, 480);
 	window.allowResize(false);
+	window.disallowTitleBar(true);
+	window.allowDragAndMove(true);
 	//Callbacks
 	window.setOnCreate(onCreate);
 	window.setOnDestroy(onDestroy);

@@ -57,6 +57,7 @@ private:
 	int startY;
 	int endX;
 	int endY;
+	static bool wDragAndMove;
 	//Private functions
 	void createView();
 	static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -77,6 +78,7 @@ public:
 	void setLocation(int xloc, int yloc);
 	void setSize(int xsize, int ysize);
 	void setVisible(bool visible);
+	void setEnabled(bool enabled);
 	void setTopMost(bool active);
 	void setStartState(UIManager::wStartState state);
 	void setFocusable(bool focusable);
@@ -89,6 +91,8 @@ public:
 	void allowMaximizeButton(bool allow);
 	void allowMinimizeButton(bool allow);
 	void allowResize(bool allow);
+	void disallowTitleBar(bool allow);
+	void allowDragAndMove(bool allow);
 	void test();
 	//Others
 	void setOnCreate(wCreateCallBack callback = NULL);
