@@ -17,6 +17,8 @@ limitations under the License.*/
 
 #include "Namespace.h"
 #include <thread>
+#include <iostream>
+#include <string>
 
 //Window Callbacks
 typedef std::function<void(HWND hwnd)> wCreateCallBack;
@@ -25,6 +27,7 @@ typedef std::function<void(HWND hwnd, bool focused)> wFocusCallBack;
 typedef std::function<void(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)> wPersonalizedCallBack;
 
 //View Callbacks
-typedef std::function<void(HWND view)> vOnClick;
+typedef std::function<void(HWND hwnd)> vOnClick;
+typedef std::function<void(HWND hwnd, std::string text)> vOnTextChange;
 
 #endif //_UI_MANAGER_INTERFACE_HEADER

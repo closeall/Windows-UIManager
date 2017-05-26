@@ -15,6 +15,9 @@ limitations under the License.*/
 #ifndef _UI_MANAGER_WINDOW_MANAGER_HEADER
 #define _UI_MANAGER_WINDOW_MANAGER_HEADER
 
+//Win7 Style Enabled
+#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' " "version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"") 
+
 #include <Windows.h>
 #include <iostream>
 #include <thread>
@@ -31,7 +34,7 @@ limitations under the License.*/
 enum UIManager::wStartState { Normal, Maximized, Minimized};
 struct vObject{
 	HWND manager;
-	UIManager::View view;
+	UIManager::View *view;
 };
 
 class UIManager::WindowManager {
@@ -76,6 +79,7 @@ public:
 	void setVisible(bool visible);
 	void setTopMost(bool active);
 	void setStartState(UIManager::wStartState state);
+	void setFocusable(bool focusable);
 	void makeTop();
 	void makeBottom();
 	//Borders & Tool Bar
@@ -85,6 +89,7 @@ public:
 	void allowMaximizeButton(bool allow);
 	void allowMinimizeButton(bool allow);
 	void allowResize(bool allow);
+	void test();
 	//Others
 	void setOnCreate(wCreateCallBack callback = NULL);
 	void setOnFocus(wFocusCallBack callback = NULL);
@@ -93,7 +98,7 @@ public:
 	void build();
 	//Runtime Functions
 	//
-	void addView(UIManager::View view);
+	void addView(UIManager::View &view);
 };
 
 #endif //#define _UI_MANAGER_WINDOW_MANAGER_HEADER

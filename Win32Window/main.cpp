@@ -1,3 +1,4 @@
+
 #include <windows.h>
 #include <iostream>
 //Lib
@@ -5,14 +6,18 @@
 #include "UIManager\WindowManager.h"
 #include "UIManager\View.h"
 
-//3# Create Window CallBacks
+//CallBacks
 void onCreate(HWND hwnd);
 void onDestroy(HWND hwnd);
-//View
 void onButtonClick(HWND object);
+void onTextChange(HWND object, std::string text);
 
-//1# Global(or not) reference for access from inside childs with Manager control
+//Objects
 UIManager::WindowManager window;
+UIManager::View textView;
+UIManager::View button;
+UIManager::View editText;
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 	window.setInitialData(hInstance, "Ventana de Prueba", 200, 100);
 	window.setSize(400, 480);
@@ -25,19 +30,33 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 void onCreate(HWND hwnd) {
 	//TextBox1
-	UIManager::View textView = UIManager::View(UIManager::TextView);
+	textView = UIManager::View(UIManager::TextView);
 	textView.setText("This is a message");
 	window.addView(textView);
 	//Button1
-	UIManager::View button = UIManager::View(UIManager::Button);
+	button = UIManager::View(UIManager::Button);
 	button.setText("Click here");
-	button.setLocation(70, 70);
+	button.setLocation(70, 80);
 	button.setOnClick(onButtonClick);
 	window.addView(button);
+	//EditText1
+	editText = UIManager::View(UIManager::EditText);
+	editText.setText("Prueba");
+	editText.setLocation(70, 120);
+	editText.setOnTextChange(onTextChange);
+	window.addView(editText);
 }
 
 void onButtonClick(HWND object) {
-	window.makeBottom();
+	//window.test();
+	button.setText("Clicked!");
+	//button.setTextFont("Chiller");
+	//button.setTextSize(15);
+	textView.setText("ola k ase");
+}
+
+void onTextChange(HWND object, std::string text) {
+	MessageBox(0, text.c_str(), "see U", MB_OK);
 }
 
 void onDestroy(HWND hwnd) {

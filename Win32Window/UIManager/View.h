@@ -29,14 +29,23 @@ class UIManager::View {
 	friend class WindowManager;
 private:
 	UIManager::ViewType vType;
+	HWND vHWND;
+	int vId;
 	std::string vText;
+	HFONT hFont;
+	std::string vFont = "Segoe UI";
+	COLORREF vFontColor = RGB(250,250,250);
+	int vFontSize = 13;
 	int startX;
 	int startY;
 	int endX;
 	int endY;
+	bool vCreated = false;
+	void updateFont();
 	//Callback
 	//
 	static std::vector<vOnClick> onClick;
+	static std::vector<vOnTextChange> onTextChange;
 public:
 	View();
 	View(UIManager::ViewType view, int startX = 50, int startY = 50, int endX = 150, int endY = 25);
@@ -44,8 +53,12 @@ public:
 	void setText(std::string text);
 	void setLocation(int xloc, int yloc);
 	void setSize(int xsize, int ysize);
+	void setTextFont(std::string fname);
+	void setTextSize(int size);
+	void setTextColor(int r, int g, int b);
 	//Others
 	void setOnClick(vOnClick callback);
+	void setOnTextChange(vOnTextChange callback);
 };
 
 #endif //#define _UI_MANAGER_VIEW_HEADER

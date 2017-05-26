@@ -15,6 +15,17 @@ limitations under the License.*/
 #include "View.h"
 
 std::vector<vOnClick> UIManager::View::onClick;
+std::vector<vOnTextChange> UIManager::View::onTextChange;
+
+void UIManager::View::updateFont()
+{
+	hFont = CreateFont(vFontSize, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET,
+		OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+		DEFAULT_PITCH | FF_DONTCARE, vFont.c_str());
+	if (vCreated) {
+		SendMessage(vHWND, WM_SETFONT, (WPARAM)hFont, TRUE);
+	}
+}
 
 UIManager::View::View()
 {
@@ -28,6 +39,8 @@ UIManager::View::View(UIManager::ViewType view, int startX, int startY, int endX
 	this->startY = startX;
 	this->endX = endX;
 	this->endY = endY;
+	onClick.push_back(NULL);
+	onTextChange.push_back(NULL);
 }
 
 void UIManager::View::setType(UIManager::ViewType view)
@@ -38,6 +51,9 @@ void UIManager::View::setType(UIManager::ViewType view)
 void UIManager::View::setText(std::string text)
 {
 	vText = text;
+	if (vCreated) {
+		SendMessage(vHWND, WM_SETTEXT, 0, (LPARAM)vText.c_str());
+	}
 }
 
 void UIManager::View::setLocation(int xloc, int yloc)
@@ -52,7 +68,41 @@ void UIManager::View::setSize(int xsize, int ysize)
 	this->endY = ysize;
 }
 
+void UIManager::View::setTextFont(std::string fname)
+{
+	vFont = fname;
+	updateFont();
+}
+
+void UIManager::View::setTextSize(int size)
+{
+	vFontSize = size;
+	updateFont();
+}
+
+void UIManager::View::setTextColor(int r, int g, int b)
+{
+	vFontColor = RGB(r, g, b);
+	RedrawWindow(vHWND, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+	//SetTextColor(vHWND, RGB(0, 0, 0));
+}
+
 void UIManager::View::setOnClick(vOnClick callback)
 {
-	onClick.push_back(callback);
+	if (!vCreated) {
+		onClick.at(onClick.size() - 1) = callback;
+	}
+	else {
+		onClick.at(vId) = callback;
+	}
+}
+
+void UIManager::View::setOnTextChange(vOnTextChange callback)
+{
+	if (!vCreated) {
+		onTextChange.at(onClick.size() - 1) = callback;
+	}
+	else {
+		onTextChange.at(vId) = callback;
+	}
 }

@@ -135,6 +135,15 @@ void UIManager::WindowManager::setStartState(UIManager::wStartState state)
 	}
 }
 
+void UIManager::WindowManager::setFocusable(bool focusable)
+{
+	if (!wCreated) {
+		if (!focusable) {
+			ExwFlags = ExwFlags | WS_EX_NOACTIVATE;
+		}
+	}
+}
+
 void UIManager::WindowManager::makeTop()
 {
 	if (wCreated) {
@@ -200,6 +209,11 @@ void UIManager::WindowManager::allowResize(bool allow)
 	}
 }
 
+void UIManager::WindowManager::test()
+{
+	createView();
+}
+
 void UIManager::WindowManager::setTopMost(bool active)
 {
 	if (!wCreated) {
@@ -250,15 +264,21 @@ void UIManager::WindowManager::build()
 	createView();
 }
 
-void UIManager::WindowManager::addView(UIManager::View view)
+void UIManager::WindowManager::addView(UIManager::View &view)
 {
 	vObject object;
-	object.view = view;
+	object.view = &view;
 	std::string type = vh::getView(view.vType);
-	object.manager = CreateWindowW(FormatFactory::StringToWString(type).c_str(), FormatFactory::StringToWString(view.vText).c_str(),
+	int nextID = vObjects.size();
+	HWND hwnd = CreateWindowW(FormatFactory::StringToWString(type).c_str(), FormatFactory::StringToWString(view.vText).c_str(),
 		WS_CHILD | WS_VISIBLE,
 		view.startX, view.startY, view.endX, view.endY,
-		wHWND, (HMENU)vObjects.size(), NULL, NULL);
+		wHWND, (HMENU)nextID, NULL, NULL);
+	object.manager = hwnd;
+	view.vCreated = true;
+	view.vHWND = hwnd;
+	view.vId = nextID;
+	view.updateFont();
 	vObjects.push_back(object);
 }
 
@@ -276,10 +296,32 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 	}
 	case WM_COMMAND: //Command execution
 	{
+		//For HWND parsed directly
+		if (wParam > vObjects.size()) {
+			vObject object;
+			for (unsigned int i = 0; i < vObjects.size(); i++) {
+				if ((HWND)lParam == vObjects.at(i).view->vHWND) {
+					object = vObjects.at(i); //Object Found
+					if ((HIWORD(wParam) == EN_CHANGE)) {
+						TCHAR buff[1024];
+						GetWindowText((HWND)lParam, buff, sizeof(buff));
+						object.view->vText = buff;
+						vOnTextChange tch = object.view->onTextChange.at(object.view->vId);
+						tch(object.manager, buff);
+					}
+				}
+			}
+			break;
+		}
+		//For HWND parsed thr ID
 		vObject object = vObjects.at(wParam);
-		if (object.view.onClick.size() != 0) {
-			vOnClick btton = object.view.onClick.at(wParam - 1);
-			btton(object.manager);
+		switch (object.view->vType) {
+		case Button:
+			if (object.view->onClick.size() != 0) {
+				vOnClick btton = object.view->onClick.at(wParam);
+				btton(object.manager);
+			}
+			break;
 		}
 		break;
 	}
