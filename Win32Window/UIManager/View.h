@@ -23,7 +23,7 @@ limitations under the License.*/
 #include "Namespace.h"
 #include "Interface.h"
 
-enum UIManager::ViewType { TextView, EditText, Button, ListBox, ComboBox };
+enum UIManager::ViewType { TextView, EditText, PictureBox, Button, ListBox, ComboBox };
 
 class UIManager::View {
 	friend class WindowManager;
@@ -31,7 +31,9 @@ private:
 	UIManager::ViewType vType;
 	HWND vHWND;
 	int vId;
+	DWORD vFlags = WS_CHILD | WS_VISIBLE;
 	std::string vText;
+	HBITMAP vBitMap;
 	HFONT hFont;
 	std::string vFont = "Segoe UI";
 	COLORREF vFontColor = RGB(250,250,250);
@@ -41,6 +43,7 @@ private:
 	int endX;
 	int endY;
 	bool vCreated = false;
+	bool vEnabled = true;
 	void updateFont();
 	//Callback
 	//
@@ -53,9 +56,12 @@ public:
 	void setText(std::string text);
 	void setLocation(int xloc, int yloc);
 	void setSize(int xsize, int ysize);
+	void setEnabled(bool enabled);
 	void setTextFont(std::string fname);
 	void setTextSize(int size);
 	void setTextColor(int r, int g, int b);
+	void setPictureBoxRessource(HBITMAP bitmap);
+	std::string getText();
 	//Others
 	void setOnClick(vOnClick callback);
 	void setOnTextChange(vOnTextChange callback);

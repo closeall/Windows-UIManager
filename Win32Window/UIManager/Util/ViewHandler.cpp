@@ -9,6 +9,8 @@ std::string vh::getView(UIManager::ViewType input)
 		return "Button";
 	case UIManager::EditText:
 		return "Edit";
+	case UIManager::PictureBox:
+		return "Static";
 	case UIManager::ListBox:
 		return "ListBox";
 	case UIManager::ComboBox:

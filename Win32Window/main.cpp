@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <iostream>
 //Lib
-#include "UIManager\Interface.h"
+//#include "UIManager\Interface.h"
 #include "UIManager\WindowManager.h"
 #include "UIManager\View.h"
 
@@ -17,6 +17,7 @@ UIManager::WindowManager window;
 UIManager::View textView;
 UIManager::View button;
 UIManager::View editText;
+UIManager::View pictureBox;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 	window.setInitialData(hInstance, "Ventana de Prueba", 200, 100);
@@ -45,11 +46,17 @@ void onCreate(HWND hwnd) {
 	editText.setLocation(70, 120);
 	editText.setOnTextChange(onTextChange);
 	window.addView(editText);
+	//PictureBox1
+	pictureBox = UIManager::View(UIManager::PictureBox, 70, 160, 300, 300);
+	HBITMAP hHeader = (HBITMAP)LoadImage(NULL, "header.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+	pictureBox.setPictureBoxRessource(hHeader);
+	window.addView(pictureBox);
 }
 
 void onButtonClick(HWND object) {
 	//window.test();
 	button.setText("Clicked!");
+	button.setEnabled(false);
 	//button.setTextFont("Chiller");
 	//button.setTextSize(15);
 	textView.setText("ola k ase");

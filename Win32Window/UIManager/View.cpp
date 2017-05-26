@@ -35,8 +35,11 @@ UIManager::View::View()
 UIManager::View::View(UIManager::ViewType view, int startX, int startY, int endX, int endY)
 {
 	vType = view;
+	if (view == PictureBox) {
+		vFlags = vFlags | SS_BITMAP;
+	}
 	this->startX = startX;
-	this->startY = startX;
+	this->startY = startY;
 	this->endX = endX;
 	this->endY = endY;
 	onClick.push_back(NULL);
@@ -46,6 +49,12 @@ UIManager::View::View(UIManager::ViewType view, int startX, int startY, int endX
 void UIManager::View::setType(UIManager::ViewType view)
 {
 	vType = view;
+	if (view == PictureBox) {
+		vFlags = vFlags | SS_BITMAP;
+	}
+	else {
+		vFlags = vFlags & ~SS_BITMAP;
+	}
 }
 
 void UIManager::View::setText(std::string text)
@@ -68,6 +77,14 @@ void UIManager::View::setSize(int xsize, int ysize)
 	this->endY = ysize;
 }
 
+void UIManager::View::setEnabled(bool enabled)
+{
+	vEnabled = enabled;
+	if (vCreated) {
+		EnableWindow(vHWND, vEnabled);
+	}
+}
+
 void UIManager::View::setTextFont(std::string fname)
 {
 	vFont = fname;
@@ -85,6 +102,19 @@ void UIManager::View::setTextColor(int r, int g, int b)
 	vFontColor = RGB(r, g, b);
 	RedrawWindow(vHWND, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 	//SetTextColor(vHWND, RGB(0, 0, 0));
+}
+
+void UIManager::View::setPictureBoxRessource(HBITMAP bitmap)
+{
+	vBitMap = bitmap;
+	if (vCreated) {
+		SendMessage(vHWND, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)vBitMap);
+	}
+}
+
+std::string UIManager::View::getText()
+{
+	return vText;
 }
 
 void UIManager::View::setOnClick(vOnClick callback)

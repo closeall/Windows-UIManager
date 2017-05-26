@@ -271,9 +271,13 @@ void UIManager::WindowManager::addView(UIManager::View &view)
 	std::string type = vh::getView(view.vType);
 	int nextID = vObjects.size();
 	HWND hwnd = CreateWindowW(FormatFactory::StringToWString(type).c_str(), FormatFactory::StringToWString(view.vText).c_str(),
-		WS_CHILD | WS_VISIBLE,
+		view.vFlags,
 		view.startX, view.startY, view.endX, view.endY,
 		wHWND, (HMENU)nextID, NULL, NULL);
+	if (view.vType == PictureBox) {
+		SendMessage(hwnd, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)view.vBitMap);
+	}
+	EnableWindow(hwnd, view.vEnabled);
 	object.manager = hwnd;
 	view.vCreated = true;
 	view.vHWND = hwnd;
@@ -307,7 +311,8 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 						GetWindowText((HWND)lParam, buff, sizeof(buff));
 						object.view->vText = buff;
 						vOnTextChange tch = object.view->onTextChange.at(object.view->vId);
-						tch(object.manager, buff);
+						if (tch != NULL)
+							tch(object.manager, buff);
 					}
 				}
 			}
@@ -317,10 +322,9 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 		vObject object = vObjects.at(wParam);
 		switch (object.view->vType) {
 		case Button:
-			if (object.view->onClick.size() != 0) {
-				vOnClick btton = object.view->onClick.at(wParam);
+			vOnClick btton = object.view->onClick.at(wParam);
+			if (btton != NULL)
 				btton(object.manager);
-			}
 			break;
 		}
 		break;
