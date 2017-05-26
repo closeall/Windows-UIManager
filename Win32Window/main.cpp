@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <iostream>
 //Lib
-//#include "UIManager\Interface.h"
+#include "UIManager\File.h"
 #include "UIManager\WindowManager.h"
 #include "UIManager\View.h"
 
@@ -48,8 +48,7 @@ void onCreate(HWND hwnd) {
 	window.addView(editText);
 	//PictureBox1
 	pictureBox = UIManager::View(UIManager::PictureBox, 70, 160, 300, 300);
-	HBITMAP hHeader = (HBITMAP)LoadImage(NULL, "header.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-	pictureBox.setPictureBoxRessource(hHeader);
+	pictureBox.setPictureBoxRessource(UIManager::BitMap("header.bmp"));
 	window.addView(pictureBox);
 }
 

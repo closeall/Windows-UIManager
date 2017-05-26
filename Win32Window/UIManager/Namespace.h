@@ -12,6 +12,8 @@ namespace UIManager {
 	//Views
 	class View;
 	enum ViewType;
+	//Managers
+	HBITMAP BitMap(std::string url);
 }
 
 #endif //_UI_MANAGER_NAMESPACE_HEADER

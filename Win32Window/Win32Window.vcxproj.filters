@@ -56,5 +56,8 @@
     <ClInclude Include="UIManager\Util\ViewHandler.h">
       <Filter>Archivos de código fuente\UIManager\Util</Filter>
     </ClInclude>
+    <ClInclude Include="UIManager\File.h">
+      <Filter>Archivos de código fuente\UIManager</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
