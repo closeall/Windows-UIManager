@@ -248,6 +248,18 @@ void UIManager::WindowManager::allowDragAndMove(bool allow)
 	wDragAndMove = allow;
 }
 
+void UIManager::WindowManager::setTransparentKeyColor(COLORREF color)
+{
+	SetWindowLong(wHWND, GWL_EXSTYLE, GetWindowLong(wHWND, GWL_EXSTYLE) | WS_EX_LAYERED);
+	SetLayeredWindowAttributes(wHWND, color, 0, LWA_COLORKEY);
+}
+
+void UIManager::WindowManager::setAlpha(int percent)
+{
+	SetWindowLong(wHWND, GWL_EXSTYLE, GetWindowLong(wHWND, GWL_EXSTYLE) | WS_EX_LAYERED);
+	SetLayeredWindowAttributes(wHWND, 0, (255 * percent) / 100, LWA_ALPHA);
+}
+
 void UIManager::WindowManager::test()
 {
 	//createView();

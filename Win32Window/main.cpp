@@ -52,6 +52,7 @@ void onCreate(HWND hwnd) {
 	pictureBox = UIManager::View(UIManager::PictureBox, 70, 160, 300, 300);
 	pictureBox.setPictureBoxRessource(UIManager::BitMap("header.bmp"));
 	window.addView(pictureBox);
+	window.setTransparentKeyColor(RGB(255, 0, 0));
 }
 
 void onButtonClick(HWND object) {

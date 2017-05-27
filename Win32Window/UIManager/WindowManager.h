@@ -93,6 +93,8 @@ public:
 	void allowResize(bool allow);
 	void disallowTitleBar(bool allow);
 	void allowDragAndMove(bool allow);
+	void setTransparentKeyColor(COLORREF color);
+	void setAlpha(int percent); //100 -> 0
 	void test();
 	//Others
 	void setOnCreate(wCreateCallBack callback = NULL);
