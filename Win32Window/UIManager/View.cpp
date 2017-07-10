@@ -16,6 +16,8 @@ limitations under the License.*/
 
 std::vector<vOnClick> UIManager::View::onClick;
 std::vector<vOnTextChange> UIManager::View::onTextChange;
+std::vector<vOnCursorEnter> UIManager::View::onCursorEnter;
+std::vector<vOnCursorLeave> UIManager::View::onCursorLeave;
 
 void UIManager::View::updateFont()
 {
@@ -30,30 +32,54 @@ void UIManager::View::updateFont()
 UIManager::View::View()
 {
 	vType = UIManager::TextView;
+	setType(UIManager::TextView);
 }
 
 UIManager::View::View(UIManager::ViewType view, int startX, int startY, int endX, int endY)
 {
 	vType = view;
-	if (view == PictureBox) {
-		vFlags = vFlags | SS_BITMAP;
-	}
+	setType(view);
 	this->startX = startX;
 	this->startY = startY;
 	this->endX = endX;
 	this->endY = endY;
 	onClick.push_back(NULL);
 	onTextChange.push_back(NULL);
+	onCursorEnter.push_back(NULL);
+	onCursorLeave.push_back(NULL);
 }
 
 void UIManager::View::setType(UIManager::ViewType view)
 {
 	vType = view;
-	if (view == PictureBox) {
-		vFlags = vFlags | SS_BITMAP;
+	switch (view) {
+	case Button:  //Hover
+	{
+		vFlags = vFlags | BS_NOTIFY;
+		break;
 	}
-	else {
-		vFlags = vFlags & ~SS_BITMAP;
+	case ImageButton: //Hover, Bitmap
+	{
+		vFlags = vFlags | SS_BITMAP;
+		vFlags = vFlags | BS_NOTIFY;
+		break;
+	}
+	case CustomButton: //Hover, Edit Control
+	{
+		vFlags = vFlags | BS_OWNERDRAW;
+		vFlags = vFlags | BS_NOTIFY;
+		break;
+	}
+	case EditText: //Hover
+	{
+		vFlags = vFlags | BS_NOTIFY;
+		break;
+	}
+	case PictureBox: //Bitmap
+	{
+		vFlags = vFlags | SS_BITMAP;
+		break;
+	}
 	}
 }
 
@@ -97,18 +123,24 @@ void UIManager::View::setTextSize(int size)
 	updateFont();
 }
 
-void UIManager::View::setTextColor(int r, int g, int b)
+void UIManager::View::setTextColor(COLORREF color) //Pending
 {
-	vFontColor = RGB(r, g, b);
-	RedrawWindow(vHWND, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
-	//SetTextColor(vHWND, RGB(0, 0, 0));
+	vFontColor = color;
+	if (vCreated) {
+		RedrawWindow(vHWND, 0, 0, RDW_INVALIDATE);
+	}
 }
 
-void UIManager::View::setPictureBoxRessource(HBITMAP bitmap)
+void UIManager::View::setPictureRessource(HBITMAP bitmap)
 {
 	vBitMap = bitmap;
 	if (vCreated) {
-		SendMessage(vHWND, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)vBitMap);
+		if (vType == PictureBox) {
+			SendMessage(vHWND, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)vBitMap);
+		}
+		if (vType == ImageButton) {
+			SendMessage(vHWND, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)vBitMap);
+		}
 	}
 }
 
@@ -124,6 +156,26 @@ void UIManager::View::setOnClick(vOnClick callback)
 	}
 	else {
 		onClick.at(vId) = callback;
+	}
+}
+
+void UIManager::View::setOnCursorEnter(vOnCursorEnter callback)
+{
+	if (!vCreated) {
+		onCursorEnter.at(onCursorEnter.size() - 1) = callback;
+	}
+	else {
+		onCursorEnter.at(vId) = callback;
+	}
+}
+
+void UIManager::View::setOnCursorLeave(vOnCursorLeave callback)
+{
+	if (!vCreated) {
+		onCursorLeave.at(onCursorLeave.size() - 1) = callback;
+	}
+	else {
+		onCursorLeave.at(vId) = callback;
 	}
 }
 

@@ -1,10 +1,11 @@
 //Created by Onelio
 
-#ifndef _UI_MANAGER_UTIL_VIeW_HANDLER
-#define _UI_MANAGER_UTIL_VIeW_HANDLER
+#ifndef _UI_MANAGER_UTIL_VIEW_HANDLER
+#define _UI_MANAGER_UTIL_VIEW_HANDLER
 
+#define _AFXDLL
+#include <afxwin.h>
 #include <string>
-#include <Windows.h>
 
 #include "..\View.h"
 
@@ -12,4 +13,4 @@ namespace vh {
 	std::string	getView(UIManager::ViewType input);
 };
 
-#endif //_UI_MANAGER_UTIL_VIeW_HANDLER
+#endif //_UI_MANAGER_UTIL_VIEW_HANDLER

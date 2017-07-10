@@ -29,5 +29,7 @@ typedef std::function<void(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)> w
 //View Callbacks
 typedef std::function<void(HWND hwnd)> vOnClick;
 typedef std::function<void(HWND hwnd, std::string text)> vOnTextChange;
+typedef std::function<void(HWND hwnd)> vOnCursorEnter;
+typedef std::function<void(HWND hwnd)> vOnCursorLeave;
 
 #endif //_UI_MANAGER_INTERFACE_HEADER

@@ -7,6 +7,10 @@ std::string vh::getView(UIManager::ViewType input)
 		return "Static";
 	case UIManager::Button:
 		return "Button";
+	case UIManager::ImageButton:
+		return "Button";
+	case UIManager::CustomButton:
+		return "Button";
 	case UIManager::EditText:
 		return "Edit";
 	case UIManager::PictureBox:

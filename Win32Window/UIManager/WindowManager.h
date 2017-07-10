@@ -15,10 +15,16 @@ limitations under the License.*/
 #ifndef _UI_MANAGER_WINDOW_MANAGER_HEADER
 #define _UI_MANAGER_WINDOW_MANAGER_HEADER
 
-//Win7 Style Enabled
+//Win7 Style
+#ifndef _LEGACY_UI
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' " "version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"") 
+#endif
 
-#include <Windows.h>
+#define _AFXDLL
+#include <afxwin.h>
+#include <commctrl.h>
+//#include <Windows.h>
+//#include <Windowsx.h>
 #include <iostream>
 #include <thread>
 #include <vector>
@@ -31,6 +37,7 @@ limitations under the License.*/
 #include "Util\FormatFactory.h"
 #include "Util\ViewHandler.h"
 
+//typedef HWND HWND;
 enum UIManager::wStartState { Normal, Maximized, Minimized};
 struct vObject{
 	HWND manager;
@@ -49,7 +56,7 @@ private:
 	//Window Data
 	std::string wiName;
 	DWORD ExwFlags;
-	DWORD wFlags = WS_VISIBLE | WS_SYSMENU | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_THICKFRAME;
+	DWORD wFlags = WS_VISIBLE | WS_SYSMENU | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_THICKFRAME | BS_NOTIFY;
 	HCURSOR wCursor = LoadCursor(0, IDC_ARROW);
 	HICON wIcon = LoadIcon(NULL, IDI_APPLICATION);
 	HBRUSH wbColor = GetSysColorBrush(COLOR_3DFACE);
@@ -60,6 +67,7 @@ private:
 	static bool wDragAndMove;
 	//Private functions
 	void createView();
+	static int viewLocByRef(LPARAM hwnd);
 	static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	//Callback
 	//

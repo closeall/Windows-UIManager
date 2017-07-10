@@ -3,7 +3,8 @@
 #ifndef _UI_MANAGER_NAMESPACE_HEADER
 #define _UI_MANAGER_NAMESPACE_HEADER
 
-#include <windows.h> //Win32 API Lib
+#define _AFXDLL
+#include <afxwin.h>
 
 namespace UIManager {
 	//Window

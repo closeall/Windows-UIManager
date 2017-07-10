@@ -53,6 +53,16 @@ void UIManager::WindowManager::createView()
 	}
 }
 
+int UIManager::WindowManager::viewLocByRef(LPARAM hwnd)
+{
+	for (unsigned int i = 0; i < vObjects.size(); i++) {
+		if ((HWND)hwnd == vObjects.at(i).view->vHWND) {
+			return i;
+		}
+	}
+	return 0;
+}
+
 //Public
 //
 UIManager::WindowManager::WindowManager() : hInstance(NULL)
@@ -235,10 +245,10 @@ void UIManager::WindowManager::disallowTitleBar(bool allow)
 {
 	if (!wCreated) {
 		if (allow) {
-			wFlags = wFlags | WS_POPUPWINDOW;
+			wFlags = wFlags | WS_POPUP; //WS_POPUPWINDOW
 		}
 		else {
-			wFlags = wFlags & ~WS_POPUPWINDOW;
+			wFlags = wFlags & ~WS_POPUP;
 		}
 	}
 }
@@ -330,6 +340,9 @@ void UIManager::WindowManager::addView(UIManager::View &view)
 	if (view.vType == PictureBox) {
 		SendMessage(hwnd, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)view.vBitMap);
 	}
+	if (view.vType == ImageButton) {
+		SendMessage(hwnd, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)view.vBitMap);
+	}
 	EnableWindow(hwnd, view.vEnabled);
 	object.manager = hwnd;
 	view.vCreated = true;
@@ -351,55 +364,122 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 			onCreate(hwnd);
 		break;
 	}
-	case WM_COMMAND: //Command execution
+	case WM_NOTIFY: //Actions notify
 	{
-		//For HWND parsed directly
-		if (wParam > vObjects.size()) {
-			vObject object;
-			for (unsigned int i = 0; i < vObjects.size(); i++) {
-				if ((HWND)lParam == vObjects.at(i).view->vHWND) {
-					object = vObjects.at(i); //Object Found
-					if ((HIWORD(wParam) == EN_CHANGE)) {
-						TCHAR buff[1024];
-						GetWindowText((HWND)lParam, buff, sizeof(buff));
-						object.view->vText = buff;
-						vOnTextChange tch = object.view->onTextChange.at(object.view->vId);
-						if (tch != NULL)
-							tch(object.manager, buff);
-					}
+		LPNMHDR header = (LPNMHDR)lParam; // contentView
+		switch (header->code)
+		{
+		case BCN_HOTITEMCHANGE: //On item Hover (Buttons)
+		{
+			// Handle to the button
+			vObject object = vObjects.at(viewLocByRef((LPARAM)header->hwndFrom));
+			if (object.view->vType == Button || object.view->vType == ImageButton || object.view->vType == CustomButton) {
+				NMBCHOTITEM* hot_item = (NMBCHOTITEM*)lParam;
+				if (hot_item->dwFlags & HICF_ENTERING) {
+					//On enter
+					vOnCursorEnter tch = object.view->onCursorEnter.at(object.view->vId);
+					if (tch != NULL)
+						tch(object.manager);
+				}
+				else {
+					//On leave
+					vOnCursorLeave tch = object.view->onCursorLeave.at(object.view->vId);
+					if (tch != NULL)
+						tch(object.manager);
 				}
 			}
 			break;
 		}
+		}
+		break;
+	}
+	case WM_COMMAND: //Command execution
+	{
+		//For HWND parsed directly
+		if (wParam > vObjects.size()) {
+			vObject object = vObjects.at(viewLocByRef(lParam));
+			UIManager::ViewType vType = object.view->vType;
+			if (vType == UIManager::EditText) {
+				switch (wParam) {
+				case EN_CHANGE:
+				{
+					TCHAR buff[1024];
+					GetWindowText((HWND)lParam, buff, sizeof(buff));
+					object.view->vText = buff;
+					vOnTextChange tch = object.view->onTextChange.at(object.view->vId);
+					if (tch != NULL)
+						tch(object.manager, buff);
+					break;
+				}
+				}
+			}
+			if (vType == UIManager::Button || vType == UIManager::CustomButton || vType == UIManager::ImageButton) {
+				switch (HIWORD(wParam)) {
+				case BN_CLICKED: 
+				{
+					vOnClick btton = object.view->onClick.at(object.view->vId);
+					if (btton != NULL)
+						btton(object.manager);
+					break;
+				}
+				case BN_SETFOCUS:
+				{
+					std::string xd = "xd";
+					break;
+				}
+				}
+			}
+			break;
+		} //FIX FUCKING CLICK HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 		//For HWND parsed thr ID
-		vObject object = vObjects.at(wParam);
+		/*vObject object = vObjects.at(wParam);
 		switch (object.view->vType) {
 		case Button:
 			vOnClick btton = object.view->onClick.at(wParam);
 			if (btton != NULL)
 				btton(object.manager);
 			break;
+		}*/
+		break;
+	}
+	case WM_MOUSEMOVE: //Detec when cursor moves
+	{
+		POINT point;
+		if (GetCursorPos(&point))
+		{
+			HWND hwnd = ChildWindowFromPoint(wHWND, point);
+			vObject object = vObjects.at(viewLocByRef((LPARAM)hwnd));
+			vOnClick btton = object.view->onCursorEnter.at(object.view->vId);
+			if (btton != NULL)
+				btton(object.manager);
 		}
 		break;
 	}
 	case WM_SETFOCUS: //Get Focus
 	{
+		//TrackMouseEvent(WM_MOUSEHOVER);
 		if (onFocus != NULL)
 			onFocus(hwnd, true);
 		break;
 	}
 	case WM_KILLFOCUS: //Lost Focus
 	{
+		//ReleaseCapture();
 		if (onFocus != NULL)
 			onFocus(hwnd, false);
 		break;
 	}
-	case WM_NCHITTEST: 
+	case WM_NCHITTEST: //Drag and move window by it's content
 	{
 		LRESULT hit = DefWindowProc(wHWND, msg, wParam, lParam);
 		if (hit == HTCLIENT && wDragAndMove) hit = HTCAPTION;
 		return hit;
 	}
+	case WM_CTLCOLORSTATIC: //Draw views transparent background
+		vObject object = vObjects.at(viewLocByRef(lParam));
+		SetTextColor((HDC)wParam, object.view->vFontColor); //Color
+		SetBkMode((HDC)wParam, TRANSPARENT); //BG Transp
+		return (LRESULT)GetStockObject(HOLLOW_BRUSH);
 	case WM_DESTROY: //Form Destroyed
 	{
 		if (onDestroy != NULL)
@@ -412,3 +492,21 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 		onMessageRec(hwnd, msg, wParam, lParam);
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
+
+//TODO: 
+//-Button background
+//-Put text bottom button
+//-Add auto checkbox
+//-Ad auto radio button
+//-Add def push button material
+//Image button by def has cool view
+//Fix captures
+//Fix clicks
+//Add custom
+//-Buttton hover done
+
+//Trace:
+/*
+on click button
+custom
+*/

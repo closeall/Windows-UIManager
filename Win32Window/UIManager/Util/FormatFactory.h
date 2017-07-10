@@ -5,8 +5,9 @@
 #ifndef _UI_MANAGER_UTIL_FORMAT_FACTORY
 #define _UI_MANAGER_UTIL_FORMAT_FACTORY
 
+#define _AFXDLL
+#include <afxwin.h>
 #include <string>
-#include <Windows.h>
 
 namespace FormatFactory {
 	std::wstring	StringToWString(std::string input, int codepage = CP_UTF8);
