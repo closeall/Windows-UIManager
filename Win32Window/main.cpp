@@ -14,16 +14,21 @@ void onButtonHover(HWND object);
 void onButtonEndHover(HWND object);
 void onTextChange(HWND object, std::string text);
 
+void onExit(HWND object);
+void onMinimize(HWND object);
+
 //Objects
 UIManager::WindowManager window;
 UIManager::View textView;
 UIManager::View button;
 UIManager::View editText;
 UIManager::View pictureBox;
-UIManager::View imageButton;
+
+UIManager::View imageButton; //Exit
+UIManager::View imageButton1; //Minimize
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
-	window.setInitialData(hInstance, "Ventana de Prueba", 200, 100);
+	window.setInitialData(hInstance, "Ventana de Prueba", 240, 120);
 	window.setSize(850, 520);
 	window.allowResize(false);
 	window.disallowTitleBar(true);
@@ -47,10 +52,15 @@ void onCreate(HWND hwnd) {
 	textView.setTextColor(RGB(255, 255, 255));
 	window.addView(textView);
 	//ImageButton
-	imageButton = UIManager::View(UIManager::ImageButton, 793, 55, 18, 19);
-	imageButton.setText("xd");
+	imageButton = UIManager::View(UIManager::PictureBox, 791, 53);
 	imageButton.setPictureRessource(UIManager::BitMap("u.bmp"));
+	imageButton.setOnClick(onExit);
 	window.addView(imageButton);
+	//ImageButton1
+	imageButton1 = UIManager::View(UIManager::PictureBox, 770, 53);
+	imageButton1.setPictureRessource(UIManager::BitMap("m.bmp"));
+	imageButton1.setOnClick(onMinimize);
+	window.addView(imageButton1);
 	//Button1
 	button = UIManager::View(UIManager::Button);
 	button.setText("Click here");
@@ -92,6 +102,16 @@ void onButtonDoubleClick(HWND object) {
 
 void onTextChange(HWND object, std::string text) {
 	//MessageBox(0, text.c_str(), "see U", MB_OK);
+}
+
+void onExit(HWND object)
+{
+	window.destroy();
+}
+
+void onMinimize(HWND object)
+{
+	window.minimize();
 }
 
 void onDestroy(HWND hwnd) {

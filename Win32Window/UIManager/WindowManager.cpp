@@ -78,7 +78,7 @@ void UIManager::WindowManager::setInitialData(HINSTANCE & hInstance, std::string
 	this->wiName = wiName;
 	this->hInstance = hInstance;
 	this->startX = startX;
-	this->startY = startX;
+	this->startY = startY;
 	this->endX = endX;
 	this->endY = endY;
 }
@@ -330,6 +330,21 @@ void UIManager::WindowManager::build()
 	createView();
 }
 
+void UIManager::WindowManager::minimize()
+{
+	CloseWindow(wHWND);
+}
+
+void UIManager::WindowManager::destroy()
+{
+	DestroyWindow(wHWND);
+}
+
+HWND UIManager::WindowManager::getHWND()
+{
+	return wHWND;
+}
+
 void UIManager::WindowManager::addView(UIManager::View &view)
 {
 	vObject object;
@@ -450,8 +465,16 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 				btton(object.manager);
 			break;
 		}
+		//PictureBox
+		case STN_DBLCLK:
+		{
+			vObject object = vObjects.at(viewLocByRef(lParam));
+			vOnDoubleClick btton = object.view->onDoubleClick.at(object.view->vId);
+			if (btton != NULL)
+				btton(object.manager);
+			break;
 		}
-
+		}
 		break;
 	}
 	case WM_SETFOCUS: //Get Focus
@@ -490,6 +513,12 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
+COLORREF HEX(std::string color)
+{
+	return FormatFactory::hexToColor(color);
+}
+
+
 //TODO: 
 //-Button background
 //-Put text bottom button
@@ -513,7 +542,12 @@ custom button
 handle w7 style on 10
 */
 
-COLORREF HEX(std::string color)
-{
-	return FormatFactory::hexToColor(color);
-}
+//bugfix button view on static
+
+//fix create control vector can fail
+
+//restore properties
+/*
+DWORD dwStyle = GetWindowLong(object, GWL_STYLE);
+SetWindowLong(object, GWL_STYLE, dwStyle & ~ ES_NUMBER);
+*/

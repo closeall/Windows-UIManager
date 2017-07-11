@@ -111,6 +111,9 @@ public:
 	void setOnDestroy(wDestroyCallBack callback = NULL);
 	void setPersonalizedHandler(wPersonalizedCallBack callback = NULL);
 	void build();
+	void minimize();
+	void destroy();
+	HWND getHWND();
 	//Runtime Functions
 	//
 	void addView(UIManager::View &view);

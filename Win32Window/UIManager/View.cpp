@@ -39,7 +39,6 @@ UIManager::View::View()
 UIManager::View::View(UIManager::ViewType view, int startX, int startY, int endX, int endY)
 {
 	vType = view;
-	setType(view);
 	this->startX = startX;
 	this->startY = startY;
 	this->endX = endX;
@@ -49,6 +48,7 @@ UIManager::View::View(UIManager::ViewType view, int startX, int startY, int endX
 	onTextChange.push_back(NULL);
 	onCursorEnter.push_back(NULL);
 	onCursorLeave.push_back(NULL);
+	setType(view);
 }
 
 void UIManager::View::setType(UIManager::ViewType view)
@@ -221,22 +221,28 @@ std::string UIManager::View::getText()
 	return vText;
 }
 
-//Buttons
+//Buttons, PictureBox, Label
 void UIManager::View::setOnClick(vOnClick callback)
 {
 	if (!vCreated) {
 		onClick.at(onClick.size() - 1) = callback;
+		if (vType == PictureBox || vType == TextView) {
+			vFlags = vFlags | SS_NOTIFY;
+		}
 	}
 	else {
 		onClick.at(vId) = callback;
 	}
 }
 
-//Buttons
+//Buttons, PictureBox, Label
 void UIManager::View::setOnDoubleClick(vOnDoubleClick callback)
 {
 	if (!vCreated) {
 		onDoubleClick.at(onDoubleClick.size() - 1) = callback;
+		if (vType == PictureBox || vType == TextView) {
+			vFlags = vFlags | SS_NOTIFY;
+		}
 	}
 	else {
 		onDoubleClick.at(vId) = callback;
