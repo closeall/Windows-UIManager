@@ -346,6 +346,9 @@ void UIManager::WindowManager::addView(UIManager::View &view)
 	if (view.vType == ImageButton) {
 		SendMessage(hwnd, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)view.vBitMap);
 	}
+	if (view.vType == EditText) {
+		SendMessage(hwnd, EM_SETLIMITTEXT, view.maxInput, NULL);
+	}
 	EnableWindow(hwnd, view.vEnabled);
 	object.manager = hwnd;
 	view.vCreated = true;
@@ -504,8 +507,13 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 -on click button
 -on edit chars admitidos
 -on edit focus
-on edit max
-color change in format factory
+-on edit max
+-color change in format factory
 custom button
 handle w7 style on 10
 */
+
+COLORREF HEX(std::string color)
+{
+	return FormatFactory::hexToColor(color);
+}

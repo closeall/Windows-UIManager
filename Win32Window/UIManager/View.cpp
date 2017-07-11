@@ -171,6 +171,7 @@ void UIManager::View::setInputRule(InputRule rule)
 {
 	if (!vCreated)
 		if (vType == EditText) {
+			maxInput = rule.charLimit;
 			if (rule.readOnly) {
 				vFlags = vFlags | ES_READONLY;
 			}

@@ -30,6 +30,7 @@ enum UIManager::ViewLoc { Left, Right, Center};
 enum UIManager::CaseType { Normalcase, Lowercase, Uppercase};
 
 struct UIManager::InputRule {
+	int charLimit = 0;
 	bool readOnly = false;
 	bool passWord = false;
 	bool numbersOnly = false;
@@ -51,6 +52,7 @@ private:
 	std::string vFont = "Segoe UI";
 	COLORREF vFontColor;
 	int vFontSize = 13;
+	int maxInput = 0;
 	int startX;
 	int startY;
 	int endX;

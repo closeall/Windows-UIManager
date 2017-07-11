@@ -40,7 +40,7 @@ void onCreate(HWND hwnd) {
 	pictureBox = UIManager::View(UIManager::PictureBox, 0, 0);
 	pictureBox.setPictureRessource(UIManager::BitMap("bg.bmp"));
 	window.addView(pictureBox);
-	window.setTransparentKeyColor(RGB(72, 72, 72));
+	window.setTransparentKeyColor(HEX("#484848"));
 	//TextBox1
 	textView = UIManager::View(UIManager::TextView, 100, 100);
 	textView.setText("This is a message");
@@ -63,6 +63,7 @@ void onCreate(HWND hwnd) {
 	//EditText1
 	UIManager::InputRule rule;
 	rule.numbersOnly = true;
+	rule.charLimit = 7;
 	editText = UIManager::View(UIManager::EditText);
 	editText.setText("Prueba");
 	editText.setInputRule(rule);
