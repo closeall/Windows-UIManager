@@ -16,9 +16,8 @@ limitations under the License.*/
 #define _UI_MANAGER_WINDOW_MANAGER_HEADER
 
 //Win7 Style
-#ifndef _LEGACY_UI
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' " "version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"") 
-#endif
+
 
 #define _AFXDLL
 #include <afxwin.h>

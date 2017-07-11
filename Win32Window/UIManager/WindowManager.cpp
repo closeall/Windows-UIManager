@@ -67,6 +67,9 @@ int UIManager::WindowManager::viewLocByRef(LPARAM hwnd)
 //
 UIManager::WindowManager::WindowManager() : hInstance(NULL)
 {
+	#ifdef _LEGACY_UI
+		SetWindowTheme(hwnd, L" ", L" ");
+	#endif
 	wDragAndMove = false;
 }
 
@@ -395,76 +398,67 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 	}
 	case WM_COMMAND: //Command execution
 	{
-		//For HWND parsed directly
-		if (wParam > vObjects.size()) {
+		switch (HIWORD(wParam)) {
+		//EditText Control
+		case EN_CHANGE: //Text Changed
+		{
 			vObject object = vObjects.at(viewLocByRef(lParam));
 			UIManager::ViewType vType = object.view->vType;
-			if (vType == UIManager::EditText) {
-				switch (wParam) {
-				case EN_CHANGE:
-				{
-					TCHAR buff[1024];
-					GetWindowText((HWND)lParam, buff, sizeof(buff));
-					object.view->vText = buff;
-					vOnTextChange tch = object.view->onTextChange.at(object.view->vId);
-					if (tch != NULL)
-						tch(object.manager, buff);
-					break;
-				}
-				}
-			}
-			if (vType == UIManager::Button || vType == UIManager::CustomButton || vType == UIManager::ImageButton) {
-				switch (HIWORD(wParam)) {
-				case BN_CLICKED: 
-				{
-					vOnClick btton = object.view->onClick.at(object.view->vId);
-					if (btton != NULL)
-						btton(object.manager);
-					break;
-				}
-				case BN_SETFOCUS:
-				{
-					std::string xd = "xd";
-					break;
-				}
-				}
-			}
+			TCHAR buff[1024];
+			GetWindowText((HWND)lParam, buff, sizeof(buff));
+			object.view->vText = buff;
+			vOnTextChange tch = object.view->onTextChange.at(object.view->vId);
+			if (tch != NULL)
+				tch(object.manager, buff);
 			break;
-		} //FIX FUCKING CLICK HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-		//For HWND parsed thr ID
-		/*vObject object = vObjects.at(wParam);
-		switch (object.view->vType) {
-		case Button:
-			vOnClick btton = object.view->onClick.at(wParam);
-			if (btton != NULL)
-				btton(object.manager);
-			break;
-		}*/
-		break;
-	}
-	case WM_MOUSEMOVE: //Detec when cursor moves
-	{
-		POINT point;
-		if (GetCursorPos(&point))
-		{
-			HWND hwnd = ChildWindowFromPoint(wHWND, point);
-			vObject object = vObjects.at(viewLocByRef((LPARAM)hwnd));
-			vOnClick btton = object.view->onCursorEnter.at(object.view->vId);
-			if (btton != NULL)
-				btton(object.manager);
 		}
+		case EN_SETFOCUS: //Mouse In
+		{
+			vObject object = vObjects.at(viewLocByRef(lParam));
+			UIManager::ViewType vType = object.view->vType;
+			vOnCursorEnter tch = object.view->onCursorEnter.at(object.view->vId);
+			if (tch != NULL)
+				tch(object.manager);
+			break;
+		}
+		case EN_KILLFOCUS: //Mouse Out
+		{
+			vObject object = vObjects.at(viewLocByRef(lParam));
+			UIManager::ViewType vType = object.view->vType;
+			vOnCursorLeave tch = object.view->onCursorLeave.at(object.view->vId);
+			if (tch != NULL)
+				tch(object.manager);
+			break;
+		}
+		//Button, ImageButton, CustomButton Control
+		case BN_DBLCLK:
+		{
+			vObject object = vObjects.at(viewLocByRef(lParam));
+			vOnDoubleClick btton = object.view->onDoubleClick.at(object.view->vId);
+			if (btton != NULL)
+				btton(object.manager);
+			break;
+		}
+		case BN_CLICKED:
+		{
+			vObject object = vObjects.at(viewLocByRef(lParam));
+			vOnClick btton = object.view->onClick.at(object.view->vId);
+			if (btton != NULL)
+				btton(object.manager);
+			break;
+		}
+		}
+
 		break;
 	}
 	case WM_SETFOCUS: //Get Focus
 	{
-		//TrackMouseEvent(WM_MOUSEHOVER);
 		if (onFocus != NULL)
 			onFocus(hwnd, true);
 		break;
 	}
 	case WM_KILLFOCUS: //Lost Focus
 	{
-		//ReleaseCapture();
 		if (onFocus != NULL)
 			onFocus(hwnd, false);
 		break;
@@ -507,6 +501,11 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 
 //Trace:
 /*
-on click button
-custom
+-on click button
+-on edit chars admitidos
+-on edit focus
+on edit max
+color change in format factory
+custom button
+handle w7 style on 10
 */

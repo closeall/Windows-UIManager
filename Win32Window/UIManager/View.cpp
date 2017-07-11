@@ -15,6 +15,7 @@ limitations under the License.*/
 #include "View.h"
 
 std::vector<vOnClick> UIManager::View::onClick;
+std::vector<vOnDoubleClick> UIManager::View::onDoubleClick;
 std::vector<vOnTextChange> UIManager::View::onTextChange;
 std::vector<vOnCursorEnter> UIManager::View::onCursorEnter;
 std::vector<vOnCursorLeave> UIManager::View::onCursorLeave;
@@ -44,6 +45,7 @@ UIManager::View::View(UIManager::ViewType view, int startX, int startY, int endX
 	this->endX = endX;
 	this->endY = endY;
 	onClick.push_back(NULL);
+	onDoubleClick.push_back(NULL);
 	onTextChange.push_back(NULL);
 	onCursorEnter.push_back(NULL);
 	onCursorLeave.push_back(NULL);
@@ -53,6 +55,11 @@ void UIManager::View::setType(UIManager::ViewType view)
 {
 	vType = view;
 	switch (view) {
+	case EditText:
+	{
+		vFlags = vFlags | ES_AUTOHSCROLL;
+		break;
+	}
 	case Button:  //Hover
 	{
 		vFlags = vFlags | BS_NOTIFY;
@@ -67,11 +74,6 @@ void UIManager::View::setType(UIManager::ViewType view)
 	case CustomButton: //Hover, Edit Control
 	{
 		vFlags = vFlags | BS_OWNERDRAW;
-		vFlags = vFlags | BS_NOTIFY;
-		break;
-	}
-	case EditText: //Hover
-	{
 		vFlags = vFlags | BS_NOTIFY;
 		break;
 	}
@@ -131,6 +133,74 @@ void UIManager::View::setTextColor(COLORREF color) //Pending
 	}
 }
 
+//Buttons, EditText
+void UIManager::View::setTextMargin(ViewLoc loc)
+{
+	if (!vCreated) {
+		switch (loc)
+		{
+		case UIManager::Left:
+			if (vType == EditText) {
+				vFlags = vFlags | ES_LEFT;
+			} else if (vType == Button || vType == CustomButton || vType == ImageButton) {
+				vFlags = vFlags | BS_LEFT;
+			}
+			break;
+		case UIManager::Right:
+			if (vType == EditText) {
+				vFlags = vFlags | ES_RIGHT;
+			} else if (vType == Button || vType == CustomButton || vType == ImageButton) {
+				vFlags = vFlags | BS_RIGHT;
+			}
+			break;
+		case UIManager::Center:
+			if (vType == EditText) {
+				vFlags = vFlags | ES_CENTER;
+			} else if (vType == Button || vType == CustomButton || vType == ImageButton) {
+				vFlags = vFlags | BS_CENTER;
+			}
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+//EditText
+void UIManager::View::setInputRule(InputRule rule)
+{
+	if (!vCreated)
+		if (vType == EditText) {
+			if (rule.readOnly) {
+				vFlags = vFlags | ES_READONLY;
+			}
+			if (rule.passWord) {
+				vFlags = vFlags | ES_PASSWORD;
+			}
+			if (rule.numbersOnly) {
+				vFlags = vFlags | ES_NUMBER;
+			}
+			if (rule.keepSel) {
+				vFlags = vFlags | ES_NOHIDESEL;
+			}
+			if (rule.multiLine) {
+				vFlags = vFlags | ES_MULTILINE | ES_AUTOVSCROLL;
+			}
+			switch (rule.textCase)
+			{
+			case Uppercase: {
+				vFlags = vFlags | ES_UPPERCASE;
+				break;
+			}
+			case Lowercase: {
+				vFlags = vFlags | ES_LOWERCASE;
+				break;
+			}
+			}
+		}
+}
+
+//PictureBox, ImageButton
 void UIManager::View::setPictureRessource(HBITMAP bitmap)
 {
 	vBitMap = bitmap;
@@ -144,11 +214,13 @@ void UIManager::View::setPictureRessource(HBITMAP bitmap)
 	}
 }
 
+//All
 std::string UIManager::View::getText()
 {
 	return vText;
 }
 
+//Buttons
 void UIManager::View::setOnClick(vOnClick callback)
 {
 	if (!vCreated) {
@@ -159,6 +231,18 @@ void UIManager::View::setOnClick(vOnClick callback)
 	}
 }
 
+//Buttons
+void UIManager::View::setOnDoubleClick(vOnDoubleClick callback)
+{
+	if (!vCreated) {
+		onDoubleClick.at(onDoubleClick.size() - 1) = callback;
+	}
+	else {
+		onDoubleClick.at(vId) = callback;
+	}
+}
+
+//EditText, Buttons
 void UIManager::View::setOnCursorEnter(vOnCursorEnter callback)
 {
 	if (!vCreated) {
@@ -169,6 +253,7 @@ void UIManager::View::setOnCursorEnter(vOnCursorEnter callback)
 	}
 }
 
+//EditText, Buttons
 void UIManager::View::setOnCursorLeave(vOnCursorLeave callback)
 {
 	if (!vCreated) {
@@ -179,6 +264,7 @@ void UIManager::View::setOnCursorLeave(vOnCursorLeave callback)
 	}
 }
 
+//EditText
 void UIManager::View::setOnTextChange(vOnTextChange callback)
 {
 	if (!vCreated) {

@@ -1,17 +1,15 @@
 
-//#include <windows.h>
 #include <iostream>
 //Lib
 #include "UIManager\File.h"
 #include "UIManager\WindowManager.h"
 #include "UIManager\View.h"
 
-#define _LEGACY_UI
-
 //CallBacks
 void onCreate(HWND hwnd);
 void onDestroy(HWND hwnd);
 void onButtonClick(HWND object);
+void onButtonDoubleClick(HWND object);
 void onButtonHover(HWND object);
 void onButtonEndHover(HWND object);
 void onTextChange(HWND object, std::string text);
@@ -60,26 +58,18 @@ void onCreate(HWND hwnd) {
 	button.setOnClick(onButtonClick);
 	button.setOnCursorEnter(onButtonHover);
 	button.setOnCursorLeave(onButtonEndHover);
+	button.setOnDoubleClick(onButtonDoubleClick);
 	window.addView(button);
 	//EditText1
+	UIManager::InputRule rule;
+	rule.numbersOnly = true;
 	editText = UIManager::View(UIManager::EditText);
 	editText.setText("Prueba");
+	editText.setInputRule(rule);
+	editText.setTextMargin(UIManager::ViewLoc::Center);
 	editText.setLocation(70, 120);
 	editText.setOnTextChange(onTextChange);
 	window.addView(editText);
-
-	HWND ss = CreateWindowW(L"Button", L"xD",
-		WS_CHILD | WS_VISIBLE | BS_MULTILINE,
-		120, 250, 100, 40,
-		hwnd, (HMENU)111, NULL, NULL);
-	TRACKMOUSEEVENT tme;
-	tme.cbSize = sizeof(TRACKMOUSEEVENT);
-	tme.dwFlags = TME_HOVER | TME_LEAVE;
-	tme.hwndTrack = hwnd;
-	tme.dwHoverTime = 5000;
-	bool resukt = TrackMouseEvent(&tme);
-	std::string xd = "xd";
-
 }
 
 void onButtonHover(HWND object) {
@@ -90,18 +80,17 @@ void onButtonEndHover(HWND object) {
 	button.setText("Mouse Out!");
 }
 
-
 void onButtonClick(HWND object) {
-	//window.test();
 	button.setText("Clicked!");
-	button.setEnabled(false);
-	//button.setTextFont("Chiller");
-	//button.setTextSize(15);
-	textView.setText("ola k ase");
 }
 
+void onButtonDoubleClick(HWND object) {
+	button.setText("Double Clicked!");
+}
+
+
 void onTextChange(HWND object, std::string text) {
-	MessageBox(0, text.c_str(), "see U", MB_OK);
+	//MessageBox(0, text.c_str(), "see U", MB_OK);
 }
 
 void onDestroy(HWND hwnd) {

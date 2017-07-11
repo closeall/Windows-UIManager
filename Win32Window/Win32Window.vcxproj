@@ -121,6 +121,7 @@
     <ClInclude Include="UIManager\File.h" />
     <ClInclude Include="UIManager\Interface.h" />
     <ClInclude Include="UIManager\Namespace.h" />
+    <ClInclude Include="UIManager\Util\Error.h" />
     <ClInclude Include="UIManager\Util\FormatFactory.h" />
     <ClInclude Include="UIManager\Util\ViewHandler.h" />
     <ClInclude Include="UIManager\View.h" />

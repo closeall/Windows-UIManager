@@ -59,5 +59,8 @@
     <ClInclude Include="UIManager\File.h">
       <Filter>Archivos de código fuente\UIManager</Filter>
     </ClInclude>
+    <ClInclude Include="UIManager\Util\Error.h">
+      <Filter>Archivos de código fuente\UIManager\Util</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

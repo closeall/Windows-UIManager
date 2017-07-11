@@ -23,8 +23,20 @@ limitations under the License.*/
 
 #include "Namespace.h"
 #include "Interface.h"
+#include "Util/Error.h"
 
 enum UIManager::ViewType { TextView, EditText, PictureBox, Button, ImageButton, CustomButton, ListBox, ComboBox };
+enum UIManager::ViewLoc { Left, Right, Center};
+enum UIManager::CaseType { Normalcase, Lowercase, Uppercase};
+
+struct UIManager::InputRule {
+	bool readOnly = false;
+	bool passWord = false;
+	bool numbersOnly = false;
+	bool keepSel = false;
+	bool multiLine = false;
+	CaseType textCase = Normalcase;
+};
 
 class UIManager::View {
 	friend class WindowManager;
@@ -32,7 +44,7 @@ private:
 	UIManager::ViewType vType;
 	HWND vHWND;
 	int vId;
-	DWORD vFlags = WS_CHILD | WS_VISIBLE | BS_MULTILINE;
+	DWORD vFlags = WS_CHILD | WS_VISIBLE;
 	std::string vText;
 	HBITMAP vBitMap;
 	HFONT hFont;
@@ -49,6 +61,7 @@ private:
 	//Callback
 	//
 	static std::vector<vOnClick> onClick;
+	static std::vector<vOnDoubleClick> onDoubleClick;
 	static std::vector<vOnTextChange> onTextChange;
 	static std::vector<vOnCursorEnter>onCursorEnter;
 	static std::vector<vOnCursorLeave>onCursorLeave;
@@ -60,13 +73,18 @@ public:
 	void setLocation(int xloc, int yloc);
 	void setSize(int xsize, int ysize);
 	void setEnabled(bool enabled);
+	//Text controls
 	void setTextFont(std::string fname);
 	void setTextSize(int size);
 	void setTextColor(COLORREF color);
+	void setTextMargin(ViewLoc loc);
+	void setInputRule(InputRule rule);
+	//Picture controls
 	void setPictureRessource(HBITMAP bitmap);
 	std::string getText();
 	//Others
 	void setOnClick(vOnClick callback);
+	void setOnDoubleClick(vOnDoubleClick callback);
 	void setOnCursorEnter(vOnCursorEnter callback);
 	void setOnCursorLeave(vOnCursorLeave callback);
 	void setOnTextChange(vOnTextChange callback);

@@ -13,6 +13,9 @@ namespace UIManager {
 	//Views
 	class View;
 	enum ViewType;
+	enum ViewLoc;
+	enum CaseType;
+	struct InputRule;
 	//Managers
 	HBITMAP BitMap(std::string url);
 }
