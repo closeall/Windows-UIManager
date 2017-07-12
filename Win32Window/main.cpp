@@ -32,6 +32,7 @@ UIManager::View customb;
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 	window.setInitialData(hInstance, "Ventana de Prueba", 240, 120);
 	window.setSize(850, 520);
+	window.setIcon(UIManager::Icon("g.ico"));
 	window.allowResize(false);
 	window.disallowTitleBar(true);
 	window.allowDragAndMove(true);
@@ -52,17 +53,8 @@ void onCreate(HWND hwnd) {
 	textView = UIManager::View(UIManager::TextView, 100, 100);
 	textView.setText("This is a message");
 	textView.setTextColor(RGB(255, 0, 0));
+	textView.setOnCursorEnter(onButtonHover);
 	window.addView(textView);
-	//ImageButton
-	imageButton = UIManager::View(UIManager::PictureBox, 791, 53);
-	imageButton.setPictureRessource(UIManager::BitMap("u.bmp"));
-	imageButton.setOnClick(onExit);
-	window.addView(imageButton);
-	//ImageButton1
-	imageButton1 = UIManager::View(UIManager::PictureBox, 770, 53);
-	imageButton1.setPictureRessource(UIManager::BitMap("m.bmp"));
-	imageButton1.setOnClick(onMinimize);
-	window.addView(imageButton1);
 	//Button1
 	button = UIManager::View(UIManager::Button);
 	button.setText("Click here");
@@ -87,11 +79,17 @@ void onCreate(HWND hwnd) {
 	customb = UIManager::View(UIManager::CustomButton);
 	customb.setLocation(500, 50);
 	window.addView(customb);
-	std::string text = "Button";
-	/*HWND ss = CreateWindowW(FormatFactory::StringToWString(text).c_str(), FormatFactory::StringToWString(text).c_str(),
-		WS_VISIBLE | WS_CHILD | BS_OWNERDRAW,
-		500, 50, 100, 100,
-		window.getHWND(), (HMENU)100, NULL, NULL);*/
+	//ImageButton
+	imageButton = UIManager::View(UIManager::PictureBox, 791, 53);
+	imageButton.setPictureRessource(UIManager::BitMap("u.bmp"));
+	imageButton.setOnClick(onExit);
+	imageButton.setOnCursorEnter(onButtonHover);
+	window.addView(imageButton);
+	//ImageButton1
+	imageButton1 = UIManager::View(UIManager::PictureBox, 770, 53);
+	imageButton1.setPictureRessource(UIManager::BitMap("m.bmp"));
+	imageButton1.setOnClick(onMinimize);
+	window.addView(imageButton1);
 }
 
 void onButtonHover(HWND object) {

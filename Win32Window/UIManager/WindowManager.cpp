@@ -74,6 +74,7 @@ UIManager::WindowManager::WindowManager() : hInstance(NULL)
 	wDragAndMove = false;
 }
 
+//Before
 void UIManager::WindowManager::setInitialData(HINSTANCE & hInstance, std::string wiName, int startX, int startY, int endX, int endY)
 {
 	this->wiName = wiName;
@@ -84,11 +85,13 @@ void UIManager::WindowManager::setInitialData(HINSTANCE & hInstance, std::string
 	this->endY = endY;
 }
 
+//Before
 void UIManager::WindowManager::setHInstance(HINSTANCE hInstance)
 {
 	this->hInstance = hInstance;
 }
 
+//Always
 void UIManager::WindowManager::setText(std::string text)
 {
 	wiName = text;
@@ -97,6 +100,7 @@ void UIManager::WindowManager::setText(std::string text)
 	}
 }
 
+//Always
 void UIManager::WindowManager::setLocation(int xloc, int yloc)
 {
 	startX = xloc;
@@ -106,6 +110,7 @@ void UIManager::WindowManager::setLocation(int xloc, int yloc)
 	}
 }
 
+//Always
 void UIManager::WindowManager::setSize(int xsize, int ysize)
 {
 	endX = xsize;
@@ -115,6 +120,7 @@ void UIManager::WindowManager::setSize(int xsize, int ysize)
 	}
 }
 
+//Always
 void UIManager::WindowManager::setVisible(bool visible)
 {
 	if (!wCreated) {
@@ -134,9 +140,10 @@ void UIManager::WindowManager::setVisible(bool visible)
 	}
 }
 
+//Always
 void UIManager::WindowManager::setEnabled(bool enabled)
 {
-	if (!wCreated) { //WS_DISABLED
+	if (!wCreated) {
 		if (enabled) {
 			wFlags = wFlags | WS_DISABLED;
 		}
@@ -154,6 +161,7 @@ void UIManager::WindowManager::setEnabled(bool enabled)
 	}
 }
 
+//Before
 void UIManager::WindowManager::setStartState(UIManager::wStartState state)
 {
 	switch(state) {
@@ -171,6 +179,7 @@ void UIManager::WindowManager::setStartState(UIManager::wStartState state)
 	}
 }
 
+//Before
 void UIManager::WindowManager::setFocusable(bool focusable)
 {
 	if (!wCreated) {
@@ -180,6 +189,7 @@ void UIManager::WindowManager::setFocusable(bool focusable)
 	}
 }
 
+//After
 void UIManager::WindowManager::makeTop()
 {
 	if (wCreated) {
@@ -187,6 +197,7 @@ void UIManager::WindowManager::makeTop()
 	}
 }
 
+//After
 void UIManager::WindowManager::makeBottom()
 {
 	if (wCreated) {
@@ -194,21 +205,25 @@ void UIManager::WindowManager::makeBottom()
 	}
 }
 
+//Before
 void UIManager::WindowManager::setCursor(HCURSOR cursor)
 {
 	wCursor = cursor;
 }
 
+//Before
 void UIManager::WindowManager::setIcon(HICON icon)
 {
 	wIcon = icon;
 }
 
-void UIManager::WindowManager::setBackGround(HBRUSH brush)
+//Before
+void UIManager::WindowManager::setBackground(HBRUSH brush)
 {
 	wbColor = brush;
 }
 
+//Before
 void UIManager::WindowManager::allowMaximizeButton(bool allow)
 {
 	if (!wCreated) {
@@ -221,6 +236,7 @@ void UIManager::WindowManager::allowMaximizeButton(bool allow)
 	}
 }
 
+//Before
 void UIManager::WindowManager::allowMinimizeButton(bool allow)
 {
 	if (!wCreated) {
@@ -233,6 +249,7 @@ void UIManager::WindowManager::allowMinimizeButton(bool allow)
 	}
 }
 
+//Before
 void UIManager::WindowManager::allowResize(bool allow)
 {
 	if (!wCreated) {
@@ -245,6 +262,7 @@ void UIManager::WindowManager::allowResize(bool allow)
 	}
 }
 
+//Before
 void UIManager::WindowManager::disallowTitleBar(bool allow)
 {
 	if (!wCreated) {
@@ -257,23 +275,27 @@ void UIManager::WindowManager::disallowTitleBar(bool allow)
 	}
 }
 
+//Before
 void UIManager::WindowManager::allowDragAndMove(bool allow)
 {
 	wDragAndMove = allow;
 }
 
+//After
 void UIManager::WindowManager::setTransparentKeyColor(COLORREF color)
 {
 	SetWindowLong(wHWND, GWL_EXSTYLE, GetWindowLong(wHWND, GWL_EXSTYLE) | WS_EX_LAYERED);
 	SetLayeredWindowAttributes(wHWND, color, 0, LWA_COLORKEY);
 }
 
+//After
 void UIManager::WindowManager::setAlpha(int percent)
 {
 	SetWindowLong(wHWND, GWL_EXSTYLE, GetWindowLong(wHWND, GWL_EXSTYLE) | WS_EX_LAYERED);
 	SetLayeredWindowAttributes(wHWND, 0, (255 * percent) / 100, LWA_ALPHA);
 }
 
+//DEBUG
 void UIManager::WindowManager::test()
 {
 	//createView();
@@ -281,6 +303,7 @@ void UIManager::WindowManager::test()
 	SetLayeredWindowAttributes(wHWND, RGB(255, 0, 0), 0, LWA_COLORKEY);
 }
 
+//Before
 void UIManager::WindowManager::setTopMost(bool active)
 {
 	if (!wCreated) {
@@ -293,21 +316,25 @@ void UIManager::WindowManager::setTopMost(bool active)
 	}
 }
 
+//Before
 void UIManager::WindowManager::setOnCreate(wCreateCallBack callback)
 {
 	onCreate = callback;
 }
 
+//Before
 void UIManager::WindowManager::setOnFocus(wFocusCallBack callback)
 {
 	onFocus = callback;
 }
 
+//Before
 void UIManager::WindowManager::setOnDestroy(wDestroyCallBack callback)
 {
 	onDestroy = callback;
 }
 
+//Before
 void UIManager::WindowManager::setPersonalizedHandler(wPersonalizedCallBack callback)
 {
 	onMessageRec = callback;
@@ -331,11 +358,13 @@ void UIManager::WindowManager::build()
 	createView();
 }
 
+//After
 void UIManager::WindowManager::minimize()
 {
 	CloseWindow(wHWND);
 }
 
+//After
 void UIManager::WindowManager::destroy()
 {
 	DestroyWindow(wHWND);
@@ -527,36 +556,14 @@ COLORREF HEX(std::string color)
 }
 
 
-//TODO: 
-//-Button background
-//-Put text bottom button
-//-Add auto checkbox
-//-Ad auto radio button
-//-Add def push button material
-//Image button by def has cool view
-//Fix captures
-//Fix clicks
-//Add custom
-//-Buttton hover done
-
-//Trace:
-/*
--on click button
--on edit chars admitidos
--on edit focus
--on edit max
--color change in format factory
-custom button
-handle w7 style on 10
-*/
-//----fix create control vector can fail
-
-
 
 //bugfix button view on static
 //do custom button
 //restore properties
-//bugfix static color bg
+//bugfix static color bg keeping stuff
+//do fix butto bg transp
+//do progressbar & custom pb
+//bugfix more than first static not working
 /*
 DWORD dwStyle = GetWindowLong(object, GWL_STYLE);
 SetWindowLong(object, GWL_STYLE, dwStyle & ~ ES_NUMBER);

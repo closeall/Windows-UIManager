@@ -25,4 +25,8 @@ HBITMAP UIManager::BitMap(std::string url) {
 	return (HBITMAP)LoadImage(NULL, url.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 }
 
+HICON UIManager::Icon(std::string url) {
+	return (HICON)LoadImage(NULL, url.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
+}
+
 #endif //_UI_MANAGER_FILE_HEADER

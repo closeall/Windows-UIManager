@@ -98,7 +98,7 @@ public:
 	//Borders & Tool Bar
 	void setCursor(HCURSOR cursor);
 	void setIcon(HICON icon);
-	void setBackGround(HBRUSH brush);
+	void setBackground(HBRUSH brush);
 	void allowMaximizeButton(bool allow);
 	void allowMinimizeButton(bool allow);
 	void allowResize(bool allow);

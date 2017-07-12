@@ -18,6 +18,7 @@ namespace UIManager {
 	struct InputRule;
 	//Managers
 	HBITMAP BitMap(std::string url);
+	HICON Icon(std::string url);
 }
 
 #endif //_UI_MANAGER_NAMESPACE_HEADER
