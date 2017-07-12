@@ -14,8 +14,18 @@ void onButtonHover(HWND object);
 void onButtonEndHover(HWND object);
 void onTextChange(HWND object, std::string text);
 
+//Exit Button
+UIManager::View exitButton;
 void onExit(HWND object);
+void onExitHover(HWND object);
+void onExitHoverEnd(HWND object);
+//Minimize Button
+UIManager::View minimButton;
 void onMinimize(HWND object);
+void onMinimizeHover(HWND object);
+void onMinimizeHoverEnd(HWND object);
+//ProgressBar
+UIManager::View progress;
 
 //Objects
 UIManager::WindowManager window;
@@ -24,8 +34,6 @@ UIManager::View button;
 UIManager::View editText;
 UIManager::View pictureBox;
 
-UIManager::View imageButton; //Exit
-UIManager::View imageButton1; //Minimize
 
 UIManager::View customb;
 
@@ -49,6 +57,27 @@ void onCreate(HWND hwnd) {
 	pictureBox.setPictureRessource(UIManager::BitMap("bg.bmp"));
 	window.addView(pictureBox);
 	window.setTransparentKeyColor(HEX("#484848"));
+	//Exit Button
+	exitButton = UIManager::View(UIManager::PictureBox, 791, 53);
+	exitButton.setPictureRessource(UIManager::BitMap("u.bmp"));
+	exitButton.setOnClick(onExit);
+	exitButton.setOnCursorEnter(onExitHover);
+	exitButton.setOnCursorLeave(onExitHoverEnd);
+	window.addView(exitButton);
+	//Minimize Button
+	minimButton = UIManager::View(UIManager::PictureBox, 770, 53);
+	minimButton.setPictureRessource(UIManager::BitMap("m.bmp"));
+	minimButton.setOnClick(onMinimize);
+	minimButton.setOnCursorEnter(onMinimizeHover);
+	minimButton.setOnCursorLeave(onMinimizeHoverEnd);
+	window.addView(minimButton);
+	//ProgressBar
+	progress = UIManager::View(UIManager::ProgressBar, 105, 370);
+	progress.setSize(475, 30);
+	progress.setProgress(33);
+	window.addView(progress);
+	//progress.setProgressState(UIManager::ErrorProgress);
+	progress.setProgressState(UIManager::UndefinedProgress);
 	//TextBox1
 	textView = UIManager::View(UIManager::TextView, 100, 100);
 	textView.setText("This is a message");
@@ -79,17 +108,6 @@ void onCreate(HWND hwnd) {
 	customb = UIManager::View(UIManager::CustomButton);
 	customb.setLocation(500, 50);
 	window.addView(customb);
-	//ImageButton
-	imageButton = UIManager::View(UIManager::PictureBox, 791, 53);
-	imageButton.setPictureRessource(UIManager::BitMap("u.bmp"));
-	imageButton.setOnClick(onExit);
-	imageButton.setOnCursorEnter(onButtonHover);
-	window.addView(imageButton);
-	//ImageButton1
-	imageButton1 = UIManager::View(UIManager::PictureBox, 770, 53);
-	imageButton1.setPictureRessource(UIManager::BitMap("m.bmp"));
-	imageButton1.setOnClick(onMinimize);
-	window.addView(imageButton1);
 }
 
 void onButtonHover(HWND object) {
@@ -124,14 +142,37 @@ void onTextChange(HWND object, std::string text) {
 
 void onExit(HWND object)
 {
+	exitButton.setPictureRessource(UIManager::BitMap("up.bmp"));
+	Sleep(150);
 	window.destroy();
+}
+
+void onExitHover(HWND object)
+{
+	exitButton.setPictureRessource(UIManager::BitMap("us.bmp"));
+}
+
+void onExitHoverEnd(HWND object)
+{
+	exitButton.setPictureRessource(UIManager::BitMap("u.bmp"));
 }
 
 void onMinimize(HWND object)
 {
+	minimButton.setPictureRessource(UIManager::BitMap("mp.bmp"));
+	Sleep(150);
 	window.minimize();
 }
 
+void onMinimizeHover(HWND object)
+{
+	minimButton.setPictureRessource(UIManager::BitMap("ms.bmp"));
+}
+
+void onMinimizeHoverEnd(HWND object)
+{
+	minimButton.setPictureRessource(UIManager::BitMap("m.bmp"));
+}
+
 void onDestroy(HWND hwnd) {
-	MessageBox(0, "Bye!", "see U", MB_OK);
 }

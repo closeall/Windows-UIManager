@@ -48,7 +48,7 @@ UIManager::View::View(UIManager::ViewType view, int startX, int startY, int endX
 	onTextChange.push_back(NULL);
 	onCursorEnter.push_back(NULL);
 	onCursorLeave.push_back(NULL);
-	vId = onClick.size() - 1;
+	vId = (int)onClick.size() - 1;
 	setType(view);
 }
 
@@ -288,6 +288,49 @@ std::string UIManager::View::getText()
 	return vText;
 }
 
+//ProgressBar || Always
+void UIManager::View::setProgress(int progress)
+{
+	this->aProgress = progress;
+	if (vCreated) {
+		SendMessage(vHWND, PBM_SETPOS, (WPARAM)aProgress, 0);
+	}
+}
+
+//ProgressBar || Always
+void UIManager::View::setProgressMax(int progress)
+{
+	this->mProgress = progress;
+	if (vCreated) {
+		SendMessage(vHWND, PBM_SETRANGE, 0, MAKELPARAM(0, mProgress));
+	}
+}
+
+//ProgressBar || After
+void UIManager::View::setProgressState(ProgressState state)
+{
+	if (vCreated)
+		switch (state) {
+		case ProgressState::NormalProgress:
+			SendMessage(vHWND, PBM_SETSTATE, PBST_NORMAL, 0);
+			//SetWindowLong(vHWND, GWL_STYLE, dwStyle & ~PBS_MARQUEE);
+			break;
+		case ProgressState::ErrorProgress:
+			SendMessage(vHWND, PBM_SETSTATE, PBST_ERROR, 0);
+			//SetWindowLong(vHWND, GWL_STYLE, dwStyle & ~PBS_MARQUEE);
+			break;
+		case ProgressState::PausedProgress:
+			SendMessage(vHWND, PBM_SETSTATE, PBST_PAUSED, 0);
+			//SetWindowLong(vHWND, GWL_STYLE, dwStyle & ~PBS_MARQUEE);
+			break;
+		case ProgressState::UndefinedProgress:
+			DWORD dwStyle = GetWindowLong(vHWND, GWL_STYLE);
+			SetWindowLong(vHWND, GWL_STYLE, dwStyle | PBS_MARQUEE);
+			SendMessage(vHWND, PBM_SETMARQUEE, 0, 0);
+			break;
+		}
+}
+
 //All || Always
 HWND UIManager::View::getHWND()
 {
@@ -297,12 +340,30 @@ HWND UIManager::View::getHWND()
 //Buttons, Static || Always
 void UIManager::View::setOnClick(vOnClick callback)
 {
+	if (vType == PictureBox || vType == TextView) {
+		if (!vCreated) {
+			vFlags = vFlags | SS_NOTIFY;
+		}
+		else {
+			DWORD dwStyle = GetWindowLong(vHWND, GWL_STYLE);
+			SetWindowLong(vHWND, GWL_STYLE, dwStyle | SS_NOTIFY);
+		}
+	}
 	onClick.at(vId) = callback;
 }
 
 //Buttons, Static || Always
 void UIManager::View::setOnDoubleClick(vOnDoubleClick callback)
 {
+	if (vType == PictureBox || vType == TextView) {
+		if (!vCreated) {
+			vFlags = vFlags | SS_NOTIFY;
+		}
+		else {
+			DWORD dwStyle = GetWindowLong(vHWND, GWL_STYLE);
+			SetWindowLong(vHWND, GWL_STYLE, dwStyle | SS_NOTIFY);
+		}
+	}
 	onDoubleClick.at(vId) = callback;
 }
 

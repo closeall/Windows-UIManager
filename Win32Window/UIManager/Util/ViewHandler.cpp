@@ -15,6 +15,8 @@ std::string vh::getView(UIManager::ViewType input)
 		return "Edit";
 	case UIManager::PictureBox:
 		return "Static";
+	case UIManager::ProgressBar:
+		return PROGRESS_CLASS;
 	case UIManager::ListBox:
 		return "ListBox";
 	case UIManager::ComboBox:

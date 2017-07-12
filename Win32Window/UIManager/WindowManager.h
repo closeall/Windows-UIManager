@@ -21,6 +21,7 @@ limitations under the License.*/
 #endif
 
 #define _AFXDLL
+#include <SDKDDKVer.h>
 #include <afxwin.h>
 #include <commctrl.h>
 //#include <Windows.h>

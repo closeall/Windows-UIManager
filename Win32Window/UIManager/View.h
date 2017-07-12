@@ -16,6 +16,7 @@ limitations under the License.*/
 #define _UI_MANAGER_VIEW_HEADER
 
 #define _AFXDLL
+#include <SDKDDKVer.h>
 #include <afxwin.h>
 #include <iostream>
 #include <string>
@@ -25,9 +26,10 @@ limitations under the License.*/
 #include "Interface.h"
 #include "Util/Error.h"
 
-enum UIManager::ViewType { TextView, EditText, PictureBox, Button, ImageButton, CustomButton, ListBox, ComboBox };
+enum UIManager::ViewType { TextView, EditText, PictureBox, Button, ImageButton, CustomButton, ListBox, ComboBox, ProgressBar };
 enum UIManager::ViewMargin { Left, Right, Center};
 enum UIManager::CaseType { Normalcase, Lowercase, Uppercase};
+enum UIManager::ProgressState { NormalProgress, ErrorProgress, PausedProgress, UndefinedProgress};
 
 struct UIManager::InputRule {
 	int charLimit = 0;
@@ -52,7 +54,11 @@ private:
 	std::string vFont = "Segoe UI";
 	COLORREF vFontColor;
 	int vFontSize = 13;
+	//Edit
 	int maxInput = 0;
+	//ProgressBar
+	int aProgress = 0;
+	int mProgress = 100;
 	int startX;
 	int startY;
 	int endX;
@@ -75,17 +81,22 @@ public:
 	void setLocation(int xloc, int yloc);
 	void setSize(int xsize, int ysize);
 	void setEnabled(bool enabled);
-	//Text controls
 	void setTextFont(std::string fname);
 	void setTextSize(int size);
+	//Text controls
 	void setTextColor(COLORREF color);
 	void setMargin(ViewMargin loc);
+	//EditText Controls
 	void setInputRule(InputRule rule);
 	//Picture controls
 	void setPictureRessource(HBITMAP bitmap);
 	std::string getText();
-	HWND getHWND();
+	//Progressbar controls
+	void setProgress(int progress);
+	void setProgressMax(int progress);
+	void setProgressState(ProgressState state);
 	//Others
+	HWND getHWND();
 	void setOnClick(vOnClick callback);
 	void setOnDoubleClick(vOnDoubleClick callback);
 	void setOnCursorEnter(vOnCursorEnter callback);

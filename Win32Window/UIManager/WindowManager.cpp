@@ -380,7 +380,7 @@ void UIManager::WindowManager::addView(UIManager::View &view)
 	vObject object;
 	object.view = &view;
 	std::string type = vh::getView(view.vType);
-	int nextID = vObjects.size();
+	int nextID = (int)vObjects.size();
 	HWND hwnd = CreateWindowW(FormatFactory::StringToWString(type).c_str(), FormatFactory::StringToWString(view.vText).c_str(),
 		view.vFlags,
 		view.startX, view.startY, view.endX, view.endY,
@@ -393,6 +393,10 @@ void UIManager::WindowManager::addView(UIManager::View &view)
 	}
 	if (view.vType == EditText) {
 		SendMessage(hwnd, EM_SETLIMITTEXT, view.maxInput, NULL);
+	}
+	if (view.vType == ProgressBar) {
+		SendMessage(hwnd, PBM_SETRANGE, 0, MAKELPARAM(0, view.mProgress));
+		SendMessage(hwnd, PBM_SETPOS, (WPARAM)view.aProgress, 0);
 	}
 	EnableWindow(hwnd, view.vEnabled);
 	object.manager = hwnd;
@@ -559,11 +563,9 @@ COLORREF HEX(std::string color)
 
 //bugfix button view on static
 //do custom button
-//restore properties
 //bugfix static color bg keeping stuff
 //do fix butto bg transp
-//do progressbar & custom pb
-//bugfix more than first static not working
+//custom pb
 /*
 DWORD dwStyle = GetWindowLong(object, GWL_STYLE);
 SetWindowLong(object, GWL_STYLE, dwStyle & ~ ES_NUMBER);

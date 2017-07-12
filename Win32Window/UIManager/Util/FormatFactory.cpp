@@ -19,7 +19,7 @@ std::string FormatFactory::WStringToString(std::wstring str, int codepage)
 }
 
 static int HexadecimalToDecimal(std::string hex) {
-	int hexLength = hex.length();
+	size_t hexLength = hex.length();
 	double dec = 0;
 
 	for (int i = 0; i < hexLength; ++i)

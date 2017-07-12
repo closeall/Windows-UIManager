@@ -6,6 +6,7 @@
 #define _UI_MANAGER_UTIL_DRAWER_HEADER
 
 #define _AFXDLL
+#include <SDKDDKVer.h>
 #include <afxwin.h>
 #include <string>
 

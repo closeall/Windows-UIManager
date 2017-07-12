@@ -37,7 +37,7 @@
       <Filter>Archivos de código fuente\UIManager</Filter>
     </ClCompile>
     <ClCompile Include="UIManager\Util\Drawer.cpp">
-      <Filter>Archivos de código fuente</Filter>
+      <Filter>Archivos de código fuente\UIManager\Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

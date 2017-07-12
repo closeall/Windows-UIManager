@@ -4,6 +4,7 @@
 #define _UI_MANAGER_NAMESPACE_HEADER
 
 #define _AFXDLL
+#include <SDKDDKVer.h>
 #include <afxwin.h>
 
 namespace UIManager {
@@ -15,6 +16,7 @@ namespace UIManager {
 	enum ViewType;
 	enum ViewMargin;
 	enum CaseType;
+	enum ProgressState;
 	struct InputRule;
 	//Managers
 	HBITMAP BitMap(std::string url);

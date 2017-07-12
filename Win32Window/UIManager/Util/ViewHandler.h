@@ -4,6 +4,7 @@
 #define _UI_MANAGER_UTIL_VIEW_HANDLER
 
 #define _AFXDLL
+#include <SDKDDKVer.h>
 #include <afxwin.h>
 #include <string>
 
