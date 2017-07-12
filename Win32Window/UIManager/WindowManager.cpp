@@ -482,6 +482,7 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 		SetTextColor((HDC)wParam, object.view->vFontColor); //Color
 		SetBkMode((HDC)wParam, TRANSPARENT); //BG Transp
 		return (LRESULT)GetStockObject(HOLLOW_BRUSH);
+		break;
 	}
 	case WM_DRAWITEM: //Draw control data
 	{
@@ -555,6 +556,7 @@ handle w7 style on 10
 //bugfix button view on static
 //do custom button
 //restore properties
+//bugfix static color bg
 /*
 DWORD dwStyle = GetWindowLong(object, GWL_STYLE);
 SetWindowLong(object, GWL_STYLE, dwStyle & ~ ES_NUMBER);

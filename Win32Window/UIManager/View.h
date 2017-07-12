@@ -26,7 +26,7 @@ limitations under the License.*/
 #include "Util/Error.h"
 
 enum UIManager::ViewType { TextView, EditText, PictureBox, Button, ImageButton, CustomButton, ListBox, ComboBox };
-enum UIManager::ViewLoc { Left, Right, Center};
+enum UIManager::ViewMargin { Left, Right, Center};
 enum UIManager::CaseType { Normalcase, Lowercase, Uppercase};
 
 struct UIManager::InputRule {
@@ -79,11 +79,12 @@ public:
 	void setTextFont(std::string fname);
 	void setTextSize(int size);
 	void setTextColor(COLORREF color);
-	void setTextMargin(ViewLoc loc);
+	void setMargin(ViewMargin loc);
 	void setInputRule(InputRule rule);
 	//Picture controls
 	void setPictureRessource(HBITMAP bitmap);
 	std::string getText();
+	HWND getHWND();
 	//Others
 	void setOnClick(vOnClick callback);
 	void setOnDoubleClick(vOnDoubleClick callback);

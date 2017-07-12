@@ -52,6 +52,7 @@ UIManager::View::View(UIManager::ViewType view, int startX, int startY, int endX
 	setType(view);
 }
 
+//All || Before
 void UIManager::View::setType(UIManager::ViewType view)
 {
 	vType = view;
@@ -86,6 +87,7 @@ void UIManager::View::setType(UIManager::ViewType view)
 	}
 }
 
+//All || Always
 void UIManager::View::setText(std::string text)
 {
 	vText = text;
@@ -94,18 +96,27 @@ void UIManager::View::setText(std::string text)
 	}
 }
 
+//All || Always
 void UIManager::View::setLocation(int xloc, int yloc)
 {
 	this->startX = xloc;
 	this->startY = yloc;
+	if (vCreated) {
+		MoveWindow(vHWND, xloc, yloc, endX, endY, 1);
+	}
 }
 
+//All || Always
 void UIManager::View::setSize(int xsize, int ysize)
 {
 	this->endX = xsize;
 	this->endY = ysize;
+	if (vCreated) {
+		MoveWindow(vHWND, startX, startY, xsize, ysize, 1);
+	}
 }
 
+//All || Always
 void UIManager::View::setEnabled(bool enabled)
 {
 	vEnabled = enabled;
@@ -114,18 +125,21 @@ void UIManager::View::setEnabled(bool enabled)
 	}
 }
 
+//All || Always
 void UIManager::View::setTextFont(std::string fname)
 {
 	vFont = fname;
 	updateFont();
 }
 
+//All || Always
 void UIManager::View::setTextSize(int size)
 {
 	vFontSize = size;
 	updateFont();
 }
 
+//Edit, Static || Always
 void UIManager::View::setTextColor(COLORREF color) //Pending
 {
 	vFontColor = color;
@@ -134,8 +148,8 @@ void UIManager::View::setTextColor(COLORREF color) //Pending
 	}
 }
 
-//Buttons, EditText
-void UIManager::View::setTextMargin(ViewLoc loc)
+//Buttons, EditText || Always
+void UIManager::View::setMargin(ViewMargin loc)
 {
 	if (!vCreated) {
 		switch (loc)
@@ -143,31 +157,83 @@ void UIManager::View::setTextMargin(ViewLoc loc)
 		case UIManager::Left:
 			if (vType == EditText) {
 				vFlags = vFlags | ES_LEFT;
-			} else if (vType == Button || vType == CustomButton || vType == ImageButton) {
+			}
+			else if (vType == Button || vType == CustomButton || vType == ImageButton) {
 				vFlags = vFlags | BS_LEFT;
 			}
 			break;
 		case UIManager::Right:
 			if (vType == EditText) {
 				vFlags = vFlags | ES_RIGHT;
-			} else if (vType == Button || vType == CustomButton || vType == ImageButton) {
+			}
+			else if (vType == Button || vType == CustomButton || vType == ImageButton) {
 				vFlags = vFlags | BS_RIGHT;
 			}
 			break;
 		case UIManager::Center:
 			if (vType == EditText) {
 				vFlags = vFlags | ES_CENTER;
-			} else if (vType == Button || vType == CustomButton || vType == ImageButton) {
+			}
+			else if (vType == Button || vType == CustomButton || vType == ImageButton) {
 				vFlags = vFlags | BS_CENTER;
 			}
 			break;
 		default:
 			break;
 		}
+	} else {
+		switch (loc)
+		{
+		case UIManager::Left:
+			if (vType == EditText) {
+				vFlags = vFlags | ES_LEFT;
+				vFlags = vFlags & ~ES_RIGHT;
+				vFlags = vFlags & ~ES_CENTER;
+				SetWindowLong(vHWND, GWL_STYLE, vFlags);
+			}
+			else if (vType == Button || vType == CustomButton || vType == ImageButton) {
+				vFlags = vFlags | BS_LEFT;
+				vFlags = vFlags & ~BS_RIGHT;
+				vFlags = vFlags & ~BS_CENTER;
+				SetWindowLong(vHWND, GWL_STYLE, vFlags);
+			}
+			break;
+		case UIManager::Right:
+			if (vType == EditText) {
+				vFlags = vFlags | ES_RIGHT;
+				vFlags = vFlags & ~ES_LEFT;
+				vFlags = vFlags & ~ES_CENTER;
+				SetWindowLong(vHWND, GWL_STYLE, vFlags);
+			}
+			else if (vType == Button || vType == CustomButton || vType == ImageButton) {
+				vFlags = vFlags | BS_RIGHT;
+				vFlags = vFlags & ~BS_LEFT;
+				vFlags = vFlags & ~BS_CENTER;
+				SetWindowLong(vHWND, GWL_STYLE, vFlags);
+			}
+			break;
+		case UIManager::Center:
+			if (vType == EditText) {
+				vFlags = vFlags | ES_CENTER;
+				vFlags = vFlags & ~ES_RIGHT;
+				vFlags = vFlags & ~ES_LEFT;
+				SetWindowLong(vHWND, GWL_STYLE, vFlags);
+			}
+			else if (vType == Button || vType == CustomButton || vType == ImageButton) {
+				vFlags = vFlags | BS_CENTER;
+				vFlags = vFlags & ~BS_RIGHT;
+				vFlags = vFlags & ~BS_LEFT;
+				SetWindowLong(vHWND, GWL_STYLE, vFlags);
+			}
+			break;
+		default:
+			break;
+		}
+		InvalidateRect(vHWND, NULL, TRUE);
 	}
 }
 
-//EditText
+//EditText || Before
 void UIManager::View::setInputRule(InputRule rule)
 {
 	if (!vCreated)
@@ -202,7 +268,7 @@ void UIManager::View::setInputRule(InputRule rule)
 		}
 }
 
-//PictureBox, ImageButton
+//PictureBox, ImageButton || Always
 void UIManager::View::setPictureRessource(HBITMAP bitmap)
 {
 	vBitMap = bitmap;
@@ -216,37 +282,43 @@ void UIManager::View::setPictureRessource(HBITMAP bitmap)
 	}
 }
 
-//All
+//All || Always
 std::string UIManager::View::getText()
 {
 	return vText;
 }
 
-//Buttons, PictureBox, Label
+//All || Always
+HWND UIManager::View::getHWND()
+{
+	return vHWND;
+}
+
+//Buttons, Static || Always
 void UIManager::View::setOnClick(vOnClick callback)
 {
 	onClick.at(vId) = callback;
 }
 
-//Buttons, PictureBox, Label
+//Buttons, Static || Always
 void UIManager::View::setOnDoubleClick(vOnDoubleClick callback)
 {
 	onDoubleClick.at(vId) = callback;
 }
 
-//All
+//All || Always
 void UIManager::View::setOnCursorEnter(vOnCursorEnter callback)
 {
 	onCursorEnter.at(vId) = callback;
 }
 
-//All
+//All || Always
 void UIManager::View::setOnCursorLeave(vOnCursorLeave callback)
 {
 	onCursorLeave.at(vId) = callback;
 }
 
-//EditText
+//EditText || Always
 void UIManager::View::setOnTextChange(vOnTextChange callback)
 {
 	onTextChange.at(vId) = callback;

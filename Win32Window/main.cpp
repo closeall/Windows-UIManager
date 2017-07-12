@@ -51,7 +51,7 @@ void onCreate(HWND hwnd) {
 	//TextBox1
 	textView = UIManager::View(UIManager::TextView, 100, 100);
 	textView.setText("This is a message");
-	textView.setTextColor(RGB(255, 255, 255));
+	textView.setTextColor(RGB(255, 0, 0));
 	window.addView(textView);
 	//ImageButton
 	imageButton = UIManager::View(UIManager::PictureBox, 791, 53);
@@ -79,7 +79,7 @@ void onCreate(HWND hwnd) {
 	editText = UIManager::View(UIManager::EditText);
 	editText.setText("Prueba");
 	editText.setInputRule(rule);
-	editText.setTextMargin(UIManager::ViewLoc::Center);
+	editText.setMargin(UIManager::ViewMargin::Center);
 	editText.setLocation(70, 120);
 	editText.setOnTextChange(onTextChange);
 	window.addView(editText);
@@ -104,6 +104,15 @@ void onButtonEndHover(HWND object) {
 
 void onButtonClick(HWND object) {
 	button.setText("Clicked!");
+	button.setLocation(70, 220);
+	textView.setLocation(190, 100);
+	button.setTextFont("Arial");
+	button.setTextSize(24);
+	button.setTextColor(HEX("#666666"));
+	textView.setTextFont("Arial");
+	textView.setTextSize(24);
+	textView.setTextColor(HEX("#666666"));
+	editText.setMargin(UIManager::ViewMargin::Left);
 }
 
 void onButtonDoubleClick(HWND object) {

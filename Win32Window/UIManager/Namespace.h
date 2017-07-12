@@ -13,7 +13,7 @@ namespace UIManager {
 	//Views
 	class View;
 	enum ViewType;
-	enum ViewLoc;
+	enum ViewMargin;
 	enum CaseType;
 	struct InputRule;
 	//Managers
