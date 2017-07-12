@@ -33,4 +33,9 @@ typedef std::function<void(HWND hwnd, std::string text)> vOnTextChange;
 typedef std::function<void(HWND hwnd)> vOnCursorEnter;
 typedef std::function<void(HWND hwnd)> vOnCursorLeave;
 
+//View Redraw
+typedef std::function<void(HWND hwnd, LPDRAWITEMSTRUCT lpDrawItem)> vOnNormalRedraw;
+typedef std::function<void(HWND hwnd, LPDRAWITEMSTRUCT lpDrawItem)> vOnHoverRedraw;
+typedef std::function<void(HWND hwnd, LPDRAWITEMSTRUCT lpDrawItem)> vOnPressRedraw;
+
 #endif //_UI_MANAGER_INTERFACE_HEADER

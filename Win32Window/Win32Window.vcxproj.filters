@@ -36,6 +36,9 @@
     <ClCompile Include="UIManager\View.cpp">
       <Filter>Archivos de código fuente\UIManager</Filter>
     </ClCompile>
+    <ClCompile Include="UIManager\Util\Drawer.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UIManager\Namespace.h">
@@ -60,6 +63,9 @@
       <Filter>Archivos de código fuente\UIManager</Filter>
     </ClInclude>
     <ClInclude Include="UIManager\Util\Error.h">
+      <Filter>Archivos de código fuente\UIManager\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager\Util\Drawer.h">
       <Filter>Archivos de código fuente\UIManager\Util</Filter>
     </ClInclude>
   </ItemGroup>

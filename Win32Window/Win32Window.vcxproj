@@ -112,6 +112,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="UIManager\Util\Drawer.cpp" />
     <ClCompile Include="UIManager\Util\FormatFactory.cpp" />
     <ClCompile Include="UIManager\Util\ViewHandler.cpp" />
     <ClCompile Include="UIManager\View.cpp" />
@@ -121,6 +122,7 @@
     <ClInclude Include="UIManager\File.h" />
     <ClInclude Include="UIManager\Interface.h" />
     <ClInclude Include="UIManager\Namespace.h" />
+    <ClInclude Include="UIManager\Util\Drawer.h" />
     <ClInclude Include="UIManager\Util\Error.h" />
     <ClInclude Include="UIManager\Util\FormatFactory.h" />
     <ClInclude Include="UIManager\Util\ViewHandler.h" />

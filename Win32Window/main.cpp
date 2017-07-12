@@ -27,6 +27,8 @@ UIManager::View pictureBox;
 UIManager::View imageButton; //Exit
 UIManager::View imageButton1; //Minimize
 
+UIManager::View customb;
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 	window.setInitialData(hInstance, "Ventana de Prueba", 240, 120);
 	window.setSize(850, 520);
@@ -81,6 +83,15 @@ void onCreate(HWND hwnd) {
 	editText.setLocation(70, 120);
 	editText.setOnTextChange(onTextChange);
 	window.addView(editText);
+	//Custom one
+	customb = UIManager::View(UIManager::CustomButton);
+	customb.setLocation(500, 50);
+	window.addView(customb);
+	std::string text = "Button";
+	/*HWND ss = CreateWindowW(FormatFactory::StringToWString(text).c_str(), FormatFactory::StringToWString(text).c_str(),
+		WS_VISIBLE | WS_CHILD | BS_OWNERDRAW,
+		500, 50, 100, 100,
+		window.getHWND(), (HMENU)100, NULL, NULL);*/
 }
 
 void onButtonHover(HWND object) {

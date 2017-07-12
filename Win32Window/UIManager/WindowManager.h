@@ -36,6 +36,7 @@ limitations under the License.*/
 
 #include "Util\FormatFactory.h"
 #include "Util\ViewHandler.h"
+#include "Util\Drawer.h"
 
 //typedef HWND HWND;
 COLORREF HEX(std::string color);
@@ -66,6 +67,7 @@ private:
 	int endX;
 	int endY;
 	static bool wDragAndMove;
+	static int wObjHover;
 	//Private functions
 	void createView();
 	static int viewLocByRef(LPARAM hwnd);

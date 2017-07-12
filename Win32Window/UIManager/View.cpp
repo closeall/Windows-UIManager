@@ -48,6 +48,7 @@ UIManager::View::View(UIManager::ViewType view, int startX, int startY, int endX
 	onTextChange.push_back(NULL);
 	onCursorEnter.push_back(NULL);
 	onCursorLeave.push_back(NULL);
+	vId = onClick.size() - 1;
 	setType(view);
 }
 
@@ -224,60 +225,29 @@ std::string UIManager::View::getText()
 //Buttons, PictureBox, Label
 void UIManager::View::setOnClick(vOnClick callback)
 {
-	if (!vCreated) {
-		onClick.at(onClick.size() - 1) = callback;
-		if (vType == PictureBox || vType == TextView) {
-			vFlags = vFlags | SS_NOTIFY;
-		}
-	}
-	else {
-		onClick.at(vId) = callback;
-	}
+	onClick.at(vId) = callback;
 }
 
 //Buttons, PictureBox, Label
 void UIManager::View::setOnDoubleClick(vOnDoubleClick callback)
 {
-	if (!vCreated) {
-		onDoubleClick.at(onDoubleClick.size() - 1) = callback;
-		if (vType == PictureBox || vType == TextView) {
-			vFlags = vFlags | SS_NOTIFY;
-		}
-	}
-	else {
-		onDoubleClick.at(vId) = callback;
-	}
+	onDoubleClick.at(vId) = callback;
 }
 
-//EditText, Buttons
+//All
 void UIManager::View::setOnCursorEnter(vOnCursorEnter callback)
 {
-	if (!vCreated) {
-		onCursorEnter.at(onCursorEnter.size() - 1) = callback;
-	}
-	else {
-		onCursorEnter.at(vId) = callback;
-	}
+	onCursorEnter.at(vId) = callback;
 }
 
-//EditText, Buttons
+//All
 void UIManager::View::setOnCursorLeave(vOnCursorLeave callback)
 {
-	if (!vCreated) {
-		onCursorLeave.at(onCursorLeave.size() - 1) = callback;
-	}
-	else {
-		onCursorLeave.at(vId) = callback;
-	}
+	onCursorLeave.at(vId) = callback;
 }
 
 //EditText
 void UIManager::View::setOnTextChange(vOnTextChange callback)
 {
-	if (!vCreated) {
-		onTextChange.at(onClick.size() - 1) = callback;
-	}
-	else {
-		onTextChange.at(vId) = callback;
-	}
+	onTextChange.at(vId) = callback;
 }

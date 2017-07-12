@@ -21,6 +21,7 @@ wPersonalizedCallBack UIManager::WindowManager::onMessageRec;
 
 HWND UIManager::WindowManager::wHWND;
 bool UIManager::WindowManager::wDragAndMove;
+int UIManager::WindowManager::wObjHover = -1;
 std::vector<vObject> UIManager::WindowManager::vObjects;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -385,32 +386,30 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 			onCreate(hwnd);
 		break;
 	}
-	case WM_NOTIFY: //Actions notify
+	case WM_SETCURSOR: //Manage focus
 	{
-		LPNMHDR header = (LPNMHDR)lParam; // contentView
-		switch (header->code)
-		{
-		case BCN_HOTITEMCHANGE: //On item Hover (Buttons)
-		{
-			// Handle to the button
-			vObject object = vObjects.at(viewLocByRef((LPARAM)header->hwndFrom));
-			if (object.view->vType == Button || object.view->vType == ImageButton || object.view->vType == CustomButton) {
-				NMBCHOTITEM* hot_item = (NMBCHOTITEM*)lParam;
-				if (hot_item->dwFlags & HICF_ENTERING) {
-					//On enter
-					vOnCursorEnter tch = object.view->onCursorEnter.at(object.view->vId);
-					if (tch != NULL)
-						tch(object.manager);
-				}
-				else {
-					//On leave
-					vOnCursorLeave tch = object.view->onCursorLeave.at(object.view->vId);
-					if (tch != NULL)
-						tch(object.manager);
+		vObject object = vObjects.at(viewLocByRef(wParam));
+		if (object.view->vId != wObjHover) {
+			//On enter
+			vOnCursorEnter tch = object.view->onCursorEnter.at(object.view->vId);
+			if (tch != NULL)
+				tch(object.manager);
+			//Custom Button Manager
+			if (object.view->vType == CustomButton) {
+				InvalidateRect(object.manager, NULL, FALSE);
+			}
+			//On leave
+			if (wObjHover != -1) {
+				vObject objectl = vObjects.at(wObjHover);
+				vOnCursorLeave tch = objectl.view->onCursorLeave.at(objectl.view->vId);
+				if (tch != NULL)
+					tch(object.manager);
+				//Custom Button Manager
+				if (objectl.view->vType == CustomButton) {
+					InvalidateRect(objectl.manager, NULL, FALSE);
 				}
 			}
-			break;
-		}
+			wObjHover = object.view->vId;
 		}
 		break;
 	}
@@ -428,24 +427,6 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 			vOnTextChange tch = object.view->onTextChange.at(object.view->vId);
 			if (tch != NULL)
 				tch(object.manager, buff);
-			break;
-		}
-		case EN_SETFOCUS: //Mouse In
-		{
-			vObject object = vObjects.at(viewLocByRef(lParam));
-			UIManager::ViewType vType = object.view->vType;
-			vOnCursorEnter tch = object.view->onCursorEnter.at(object.view->vId);
-			if (tch != NULL)
-				tch(object.manager);
-			break;
-		}
-		case EN_KILLFOCUS: //Mouse Out
-		{
-			vObject object = vObjects.at(viewLocByRef(lParam));
-			UIManager::ViewType vType = object.view->vType;
-			vOnCursorLeave tch = object.view->onCursorLeave.at(object.view->vId);
-			if (tch != NULL)
-				tch(object.manager);
 			break;
 		}
 		//Button, ImageButton, CustomButton Control
@@ -496,10 +477,36 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 		return hit;
 	}
 	case WM_CTLCOLORSTATIC: //Draw views transparent background
+	{
 		vObject object = vObjects.at(viewLocByRef(lParam));
 		SetTextColor((HDC)wParam, object.view->vFontColor); //Color
 		SetBkMode((HDC)wParam, TRANSPARENT); //BG Transp
 		return (LRESULT)GetStockObject(HOLLOW_BRUSH);
+	}
+	case WM_DRAWITEM: //Draw control data
+	{
+		LPDRAWITEMSTRUCT lpDrawItem = (LPDRAWITEMSTRUCT)lParam;
+		vObject object = vObjects.at(viewLocByRef((LPARAM)lpDrawItem->hwndItem));
+		if (lpDrawItem->CtlType != ODT_BUTTON || object.view->vType != CustomButton)
+			return TRUE;
+
+		int state;
+		state = lpDrawItem->itemState;
+		if (state & ODS_SELECTED)
+		{
+			//click
+			DrawBitmap(lpDrawItem->hDC, 0, 0, UIManager::BitMap("m.bmp"));
+		} else {
+			if (object.view->vId == wObjHover) {
+				//Hovered
+				DrawBitmap(lpDrawItem->hDC, 0, 0, UIManager::BitMap("m.bmp"));
+			} else {
+				//Normal
+				DrawBitmap(lpDrawItem->hDC, 0, 0, UIManager::BitMap("u.bmp"));
+			}
+		}
+		break;
+	}
 	case WM_DESTROY: //Form Destroyed
 	{
 		if (onDestroy != NULL)
@@ -541,11 +548,12 @@ COLORREF HEX(std::string color)
 custom button
 handle w7 style on 10
 */
+//----fix create control vector can fail
+
+
 
 //bugfix button view on static
-
-//fix create control vector can fail
-
+//do custom button
 //restore properties
 /*
 DWORD dwStyle = GetWindowLong(object, GWL_STYLE);
