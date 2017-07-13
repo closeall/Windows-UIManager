@@ -21,7 +21,7 @@ limitations under the License.*/
 #include <string>
 
 //File
-HBITMAP UIManager::BitMap(std::string url) {
+HBITMAP UIManager::Bitmap(std::string url) {
 	return (HBITMAP)LoadImage(NULL, url.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 }
 

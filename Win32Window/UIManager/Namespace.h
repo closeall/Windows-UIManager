@@ -19,7 +19,7 @@ namespace UIManager {
 	enum ProgressState;
 	struct InputRule;
 	//Managers
-	HBITMAP BitMap(std::string url);
+	HBITMAP Bitmap(std::string url);
 	HICON Icon(std::string url);
 }
 

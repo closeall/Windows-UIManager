@@ -20,7 +20,7 @@ std::string vh::getView(UIManager::ViewType input)
 	case UIManager::ListBox:
 		return "ListBox";
 	case UIManager::ComboBox:
-		return "ComboBox";
+		return WC_COMBOBOX;
 	default:
 		return "Static";
 	}

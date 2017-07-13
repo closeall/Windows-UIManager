@@ -307,28 +307,43 @@ void UIManager::View::setProgressMax(int progress)
 }
 
 //ProgressBar || After
+void UIManager::View::setProgressVertical(bool vertical)
+{
+	if (vertical) {
+		vFlags = vFlags | PBS_VERTICAL;
+	}
+	else {
+		vFlags = vFlags & ~PBS_VERTICAL;
+	}
+}
+
+//ProgressBar || After
 void UIManager::View::setProgressState(ProgressState state)
 {
-	if (vCreated)
+	if (vCreated) {
+		DWORD dwStyle = GetWindowLong(vHWND, GWL_STYLE);
 		switch (state) {
 		case ProgressState::NormalProgress:
+			SendMessage(vHWND, (UINT)PBM_SETMARQUEE, FALSE, (LPARAM)0);
+			SetWindowLong(vHWND, GWL_STYLE, dwStyle & ~PBS_MARQUEE);
 			SendMessage(vHWND, PBM_SETSTATE, PBST_NORMAL, 0);
-			//SetWindowLong(vHWND, GWL_STYLE, dwStyle & ~PBS_MARQUEE);
 			break;
 		case ProgressState::ErrorProgress:
+			SendMessage(vHWND, (UINT)PBM_SETMARQUEE, FALSE, (LPARAM)0);
+			SetWindowLong(vHWND, GWL_STYLE, dwStyle & ~PBS_MARQUEE);
 			SendMessage(vHWND, PBM_SETSTATE, PBST_ERROR, 0);
-			//SetWindowLong(vHWND, GWL_STYLE, dwStyle & ~PBS_MARQUEE);
 			break;
 		case ProgressState::PausedProgress:
+			SendMessage(vHWND, (UINT)PBM_SETMARQUEE, FALSE, (LPARAM)0);
+			SetWindowLong(vHWND, GWL_STYLE, dwStyle & ~PBS_MARQUEE);
 			SendMessage(vHWND, PBM_SETSTATE, PBST_PAUSED, 0);
-			//SetWindowLong(vHWND, GWL_STYLE, dwStyle & ~PBS_MARQUEE);
 			break;
 		case ProgressState::UndefinedProgress:
-			DWORD dwStyle = GetWindowLong(vHWND, GWL_STYLE);
 			SetWindowLong(vHWND, GWL_STYLE, dwStyle | PBS_MARQUEE);
-			SendMessage(vHWND, PBM_SETMARQUEE, 0, 0);
+			SendMessage(vHWND, (UINT)PBM_SETMARQUEE, TRUE, (LPARAM)0);
 			break;
 		}
+	}
 }
 
 //All || Always

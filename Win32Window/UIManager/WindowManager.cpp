@@ -384,7 +384,7 @@ void UIManager::WindowManager::addView(UIManager::View &view)
 	HWND hwnd = CreateWindowW(FormatFactory::StringToWString(type).c_str(), FormatFactory::StringToWString(view.vText).c_str(),
 		view.vFlags,
 		view.startX, view.startY, view.endX, view.endY,
-		wHWND, (HMENU)nextID, NULL, NULL);
+		wHWND, (HMENU)(UINT_PTR)nextID, NULL, NULL);
 	if (view.vType == PictureBox) {
 		SendMessage(hwnd, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)view.vBitMap);
 	}
@@ -529,14 +529,14 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 		if (state & ODS_SELECTED)
 		{
 			//click
-			DrawBitmap(lpDrawItem->hDC, 0, 0, UIManager::BitMap("m.bmp"));
+			DrawBitmap(lpDrawItem->hDC, 0, 0, UIManager::Bitmap("m.bmp"));
 		} else {
 			if (object.view->vId == wObjHover) {
 				//Hovered
-				DrawBitmap(lpDrawItem->hDC, 0, 0, UIManager::BitMap("m.bmp"));
+				DrawBitmap(lpDrawItem->hDC, 0, 0, UIManager::Bitmap("m.bmp"));
 			} else {
 				//Normal
-				DrawBitmap(lpDrawItem->hDC, 0, 0, UIManager::BitMap("u.bmp"));
+				DrawBitmap(lpDrawItem->hDC, 0, 0, UIManager::Bitmap("u.bmp"));
 			}
 		}
 		break;
@@ -565,6 +565,7 @@ COLORREF HEX(std::string color)
 //do custom button
 //bugfix static color bg keeping stuff
 //do fix butto bg transp
+
 //custom pb
 /*
 DWORD dwStyle = GetWindowLong(object, GWL_STYLE);

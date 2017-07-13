@@ -54,19 +54,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 void onCreate(HWND hwnd) {
 	//Background
 	pictureBox = UIManager::View(UIManager::PictureBox, 0, 0);
-	pictureBox.setPictureRessource(UIManager::BitMap("bg.bmp"));
+	pictureBox.setPictureRessource(UIManager::Bitmap("bg.bmp"));
 	window.addView(pictureBox);
 	window.setTransparentKeyColor(HEX("#484848"));
 	//Exit Button
 	exitButton = UIManager::View(UIManager::PictureBox, 791, 53);
-	exitButton.setPictureRessource(UIManager::BitMap("u.bmp"));
+	exitButton.setPictureRessource(UIManager::Bitmap("u.bmp"));
 	exitButton.setOnClick(onExit);
 	exitButton.setOnCursorEnter(onExitHover);
 	exitButton.setOnCursorLeave(onExitHoverEnd);
 	window.addView(exitButton);
 	//Minimize Button
 	minimButton = UIManager::View(UIManager::PictureBox, 770, 53);
-	minimButton.setPictureRessource(UIManager::BitMap("m.bmp"));
+	minimButton.setPictureRessource(UIManager::Bitmap("m.bmp"));
 	minimButton.setOnClick(onMinimize);
 	minimButton.setOnCursorEnter(onMinimizeHover);
 	minimButton.setOnCursorLeave(onMinimizeHoverEnd);
@@ -74,9 +74,8 @@ void onCreate(HWND hwnd) {
 	//ProgressBar
 	progress = UIManager::View(UIManager::ProgressBar, 105, 370);
 	progress.setSize(475, 30);
-	progress.setProgress(33);
+	progress.setProgressVertical();
 	window.addView(progress);
-	//progress.setProgressState(UIManager::ErrorProgress);
 	progress.setProgressState(UIManager::UndefinedProgress);
 	//TextBox1
 	textView = UIManager::View(UIManager::TextView, 100, 100);
@@ -120,15 +119,6 @@ void onButtonEndHover(HWND object) {
 
 void onButtonClick(HWND object) {
 	button.setText("Clicked!");
-	button.setLocation(70, 220);
-	textView.setLocation(190, 100);
-	button.setTextFont("Arial");
-	button.setTextSize(24);
-	button.setTextColor(HEX("#666666"));
-	textView.setTextFont("Arial");
-	textView.setTextSize(24);
-	textView.setTextColor(HEX("#666666"));
-	editText.setMargin(UIManager::ViewMargin::Left);
 }
 
 void onButtonDoubleClick(HWND object) {
@@ -142,36 +132,36 @@ void onTextChange(HWND object, std::string text) {
 
 void onExit(HWND object)
 {
-	exitButton.setPictureRessource(UIManager::BitMap("up.bmp"));
+	exitButton.setPictureRessource(UIManager::Bitmap("up.bmp"));
 	Sleep(150);
 	window.destroy();
 }
 
 void onExitHover(HWND object)
 {
-	exitButton.setPictureRessource(UIManager::BitMap("us.bmp"));
+	exitButton.setPictureRessource(UIManager::Bitmap("us.bmp"));
 }
 
 void onExitHoverEnd(HWND object)
 {
-	exitButton.setPictureRessource(UIManager::BitMap("u.bmp"));
+	exitButton.setPictureRessource(UIManager::Bitmap("u.bmp"));
 }
 
 void onMinimize(HWND object)
 {
-	minimButton.setPictureRessource(UIManager::BitMap("mp.bmp"));
+	minimButton.setPictureRessource(UIManager::Bitmap("mp.bmp"));
 	Sleep(150);
 	window.minimize();
 }
 
 void onMinimizeHover(HWND object)
 {
-	minimButton.setPictureRessource(UIManager::BitMap("ms.bmp"));
+	minimButton.setPictureRessource(UIManager::Bitmap("ms.bmp"));
 }
 
 void onMinimizeHoverEnd(HWND object)
 {
-	minimButton.setPictureRessource(UIManager::BitMap("m.bmp"));
+	minimButton.setPictureRessource(UIManager::Bitmap("m.bmp"));
 }
 
 void onDestroy(HWND hwnd) {

@@ -94,6 +94,7 @@ public:
 	//Progressbar controls
 	void setProgress(int progress);
 	void setProgressMax(int progress);
+	void setProgressVertical(bool vertical = true);
 	void setProgressState(ProgressState state);
 	//Others
 	HWND getHWND();
