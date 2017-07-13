@@ -41,7 +41,7 @@ limitations under the License.*/
 
 //typedef HWND HWND;
 COLORREF HEX(std::string color);
-enum UIManager::wStartState { Normal, Maximized, Minimized};
+enum UIManager::StartState { Normal, Maximized, Minimized};
 struct vObject{
 	HWND manager;
 	UIManager::View *view;
@@ -92,7 +92,7 @@ public:
 	void setVisible(bool visible);
 	void setEnabled(bool enabled);
 	void setTopMost(bool active);
-	void setStartState(UIManager::wStartState state);
+	void setStartState(UIManager::StartState state);
 	void setFocusable(bool focusable);
 	void makeTop();
 	void makeBottom();

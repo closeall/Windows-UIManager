@@ -10,7 +10,7 @@
 namespace UIManager {
 	//Window
 	class WindowManager;
-	enum wStartState;
+	enum StartState;
 	//Views
 	class View;
 	enum ViewType;

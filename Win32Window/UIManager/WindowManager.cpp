@@ -162,7 +162,7 @@ void UIManager::WindowManager::setEnabled(bool enabled)
 }
 
 //Before
-void UIManager::WindowManager::setStartState(UIManager::wStartState state)
+void UIManager::WindowManager::setStartState(UIManager::StartState state)
 {
 	switch(state) {
 		case UIManager::Maximized: {

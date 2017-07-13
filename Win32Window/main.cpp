@@ -119,6 +119,7 @@ void onButtonEndHover(HWND object) {
 
 void onButtonClick(HWND object) {
 	button.setText("Clicked!");
+	window.makeTop();
 }
 
 void onButtonDoubleClick(HWND object) {
