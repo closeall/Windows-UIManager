@@ -27,6 +27,7 @@ void UIManager::View::updateFont()
 		DEFAULT_PITCH | FF_DONTCARE, vFont.c_str());
 	if (vCreated) {
 		SendMessage(vHWND, WM_SETFONT, (WPARAM)hFont, TRUE);
+		redrawView();
 	}
 }
 
@@ -139,12 +140,20 @@ void UIManager::View::setTextSize(int size)
 	updateFont();
 }
 
+void UIManager::View::setBackgroundColor(COLORREF color)
+{
+	vBackColor = color;
+	if (vCreated) {
+		redrawView();
+	}
+}
+
 //Edit, Static || Always
 void UIManager::View::setTextColor(COLORREF color) //Pending
 {
 	vFontColor = color;
 	if (vCreated) {
-		RedrawWindow(vHWND, 0, 0, RDW_INVALIDATE);
+		redrawView();
 	}
 }
 
@@ -350,6 +359,17 @@ void UIManager::View::setProgressState(ProgressState state)
 HWND UIManager::View::getHWND()
 {
 	return vHWND;
+}
+
+
+void UIManager::View::redrawView()
+{
+	RECT rect;
+	GetClientRect(vHWND, &rect);
+	InvalidateRect(vHWND, &rect, TRUE);
+	MapWindowPoints(vHWND, wHWND, (POINT *)&rect, 2);
+	RedrawWindow(wHWND, &rect, NULL, RDW_ERASE | RDW_INVALIDATE); //Redraw
+	SetWindowPos(vHWND, vHWND, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE); //Bring to top again
 }
 
 //Buttons, Static || Always

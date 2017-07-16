@@ -27,8 +27,6 @@ bool UIManager::WindowManager::wDragAndMove;
 int UIManager::WindowManager::wObjHover = -1;
 std::vector<vObject> UIManager::WindowManager::vObjects;
 
-LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-
 //Private
 //
 void UIManager::WindowManager::createView()
@@ -287,8 +285,16 @@ void UIManager::WindowManager::allowDragAndMove(bool allow)
 //After
 void UIManager::WindowManager::setTransparentKeyColor(COLORREF color)
 {
-	SetWindowLong(wHWND, GWL_EXSTYLE, GetWindowLong(wHWND, GWL_EXSTYLE) | WS_EX_LAYERED);
-	SetLayeredWindowAttributes(wHWND, color, 0, LWA_COLORKEY);
+	if (wCreated) {
+		wbColor = CreateSolidBrush(color);
+		#ifdef _WIN64
+		SetClassLongPtr(wHWND, GCLP_HBRBACKGROUND, (LONG)(__int64)wbColor);
+		#else
+		SetClassLongPtr(wHWND, GCLP_HBRBACKGROUND, (LONG)(long)wbColor);
+		#endif
+		SetWindowLong(wHWND, GWL_EXSTYLE, GetWindowLong(wHWND, GWL_EXSTYLE) | WS_EX_LAYERED);
+		SetLayeredWindowAttributes(wHWND, color, 0, LWA_COLORKEY);
+	}
 }
 
 //After
@@ -420,6 +426,7 @@ void UIManager::WindowManager::addView(UIManager::View &view)
 	object.manager = hwnd;
 	view.vCreated = true;
 	view.vHWND = hwnd;
+	view.wHWND = wHWND;
 	view.vId = nextID;
 	view.updateFont();
 	vObjects.push_back(object);
@@ -557,13 +564,34 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 		if (GetAsyncKeyState(VK_LBUTTON) & VK_LBUTTON && hit == HTCLIENT && wDragAndMove) hit = HTCAPTION;
 		return hit;
 	}
-	case WM_CTLCOLORSTATIC: //Draw views transparent background
+	case WM_CTLCOLORBTN: //Draw Buttons view transparent bg
 	{
+		SetBkMode((HDC)wParam, TRANSPARENT); //Set Text mode transparennt
+		vObject object = vObjects.at(viewLocByRef(lParam));
+		if (object.view->vBackColor == HOLLOW_BRUSH) {
+			return (LRESULT)GetStockObject(HOLLOW_BRUSH);
+		}
+		else {
+			return (LRESULT)CreateSolidBrush(object.view->vBackColor);
+		}
+	}
+	case WM_CTLCOLORSTATIC: //Draw Static views transparent bg
+	{
+		SetBkMode((HDC)wParam, TRANSPARENT);
 		vObject object = vObjects.at(viewLocByRef(lParam));
 		SetTextColor((HDC)wParam, object.view->vFontColor); //Color
-		SetBkMode((HDC)wParam, TRANSPARENT); //BG Transp
-		return (LRESULT)GetStockObject(HOLLOW_BRUSH);
-		break;
+		if (object.view->vBackColor == HOLLOW_BRUSH) {
+			if (object.view->vType == EditText) {
+				return (LRESULT)GetStockObject(WHITE_BRUSH); //ReadOnly exception bugfix
+			}
+			else {
+				SetBkMode((HDC)wParam, TRANSPARENT); //BG Transp
+				return (LRESULT)GetStockObject(HOLLOW_BRUSH);
+			}
+		}
+		else {
+			return (LRESULT)CreateSolidBrush(object.view->vBackColor);
+		}
 	}
 	case WM_DRAWITEM: //Draw control data
 	{
@@ -574,6 +602,8 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 
 		int state;
 		state = lpDrawItem->itemState;
+		SetBkMode(lpDrawItem->hDC, TRANSPARENT); //BG Transp
+		RoundRect(lpDrawItem->hDC, lpDrawItem->rcItem.left, lpDrawItem->rcItem.top, lpDrawItem->rcItem.right, lpDrawItem->rcItem.bottom, 25, 25);
 		if (state & ODS_SELECTED)
 		{
 			//click
@@ -608,10 +638,7 @@ COLORREF HEX(std::string color)
 }
 
 //desktop notifications
-//bugfix button view on static
 //do custom button
-//bugfix static color bg keeping stuff
-//do fix butto bg transp
 
 //custom pb
 /*

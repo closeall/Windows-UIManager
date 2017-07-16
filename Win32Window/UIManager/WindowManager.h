@@ -62,7 +62,7 @@ private:
 	DWORD wFlags = WS_VISIBLE | WS_SYSMENU | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_THICKFRAME | BS_NOTIFY;
 	HCURSOR wCursor = LoadCursor(0, IDC_ARROW);
 	HICON wIcon = LoadIcon(NULL, IDI_APPLICATION);
-	HBRUSH wbColor = GetSysColorBrush(COLOR_3DFACE);
+	HBRUSH wbColor;
 	int startX;
 	int startY;
 	int endX;

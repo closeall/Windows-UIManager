@@ -46,6 +46,7 @@ class UIManager::View {
 private:
 	UIManager::ViewType vType;
 	HWND vHWND;
+	HWND wHWND;
 	int vId;
 	DWORD vFlags = WS_CHILD | WS_VISIBLE;
 	std::string vText;
@@ -53,6 +54,7 @@ private:
 	HFONT hFont;
 	std::string vFont = "Segoe UI";
 	COLORREF vFontColor;
+	COLORREF vBackColor = HOLLOW_BRUSH;
 	int vFontSize = 13;
 	//Edit
 	int maxInput = 0;
@@ -83,6 +85,7 @@ public:
 	void setEnabled(bool enabled);
 	void setTextFont(std::string fname);
 	void setTextSize(int size);
+	void setBackgroundColor(COLORREF color);
 	//Text controls
 	void setTextColor(COLORREF color);
 	void setMargin(ViewMargin loc);
@@ -98,6 +101,7 @@ public:
 	void setProgressState(ProgressState state);
 	//Others
 	HWND getHWND();
+	void redrawView();
 	void setOnClick(vOnClick callback);
 	void setOnDoubleClick(vOnDoubleClick callback);
 	void setOnCursorEnter(vOnCursorEnter callback);

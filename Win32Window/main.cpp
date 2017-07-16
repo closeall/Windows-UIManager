@@ -119,7 +119,8 @@ void onButtonEndHover(HWND object) {
 
 void onButtonClick(HWND object) {
 	button.setText("Clicked!");
-	window.makeTop();
+	textView.setTextColor(RGB(255, 255, 0));
+	textView.setTextSize(18);
 }
 
 void onButtonDoubleClick(HWND object) {
