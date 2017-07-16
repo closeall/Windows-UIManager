@@ -75,6 +75,9 @@ private:
 	static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	//Callback
 	//
+	static wLeftClickCallBack onLeftClick;
+	static wRightClickCallBack onRightClick;
+	static wMiddleClickCallBack onMiddleClick;
 	static wCreateCallBack onCreate;
 	static wFocusCallBack onFocus;
 	static wDestroyCallBack onDestroy;
@@ -109,6 +112,9 @@ public:
 	void setAlpha(int percent); //100 -> 0
 	void test();
 	//Others
+	void setOnLeftClick(wLeftClickCallBack callback = NULL);
+	void setOnRightClick(wRightClickCallBack callback = NULL);
+	void setOnMiddleClick(wMiddleClickCallBack callback = NULL);
 	void setOnCreate(wCreateCallBack callback = NULL);
 	void setOnFocus(wFocusCallBack callback = NULL);
 	void setOnDestroy(wDestroyCallBack callback = NULL);

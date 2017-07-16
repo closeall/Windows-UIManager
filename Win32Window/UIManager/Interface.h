@@ -24,6 +24,9 @@ limitations under the License.*/
 typedef std::function<void(HWND hwnd)> wCreateCallBack;
 typedef std::function<void(HWND hwnd)> wDestroyCallBack;
 typedef std::function<void(HWND hwnd, bool focused)> wFocusCallBack;
+typedef std::function<void(HWND hwnd, UIManager::Coordinates coord)> wLeftClickCallBack;
+typedef std::function<void(HWND hwnd, UIManager::Coordinates coord)> wRightClickCallBack;
+typedef std::function<void(HWND hwnd, UIManager::Coordinates coord)> wMiddleClickCallBack;
 typedef std::function<void(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)> wPersonalizedCallBack;
 
 //View Callbacks

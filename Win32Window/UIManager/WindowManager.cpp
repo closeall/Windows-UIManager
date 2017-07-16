@@ -14,6 +14,9 @@ limitations under the License.*/
 
 #include "WindowManager.h"
 
+wLeftClickCallBack UIManager::WindowManager::onLeftClick;
+wRightClickCallBack UIManager::WindowManager::onRightClick;
+wMiddleClickCallBack UIManager::WindowManager::onMiddleClick;
 wCreateCallBack UIManager::WindowManager::onCreate;
 wFocusCallBack UIManager::WindowManager::onFocus;
 wDestroyCallBack UIManager::WindowManager::onDestroy;
@@ -303,6 +306,21 @@ void UIManager::WindowManager::test()
 	SetLayeredWindowAttributes(wHWND, RGB(255, 0, 0), 0, LWA_COLORKEY);
 }
 
+void UIManager::WindowManager::setOnLeftClick(wLeftClickCallBack callback)
+{
+	onLeftClick = callback;
+}
+
+void UIManager::WindowManager::setOnRightClick(wRightClickCallBack callback)
+{
+	onRightClick = callback;
+}
+
+void UIManager::WindowManager::setOnMiddleClick(wMiddleClickCallBack callback)
+{
+	onMiddleClick = callback;
+}
+
 //Before
 void UIManager::WindowManager::setTopMost(bool active)
 {
@@ -491,6 +509,36 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 		}
 		break;
 	}
+	case WM_LBUTTONDOWN:
+	{
+		UIManager::Coordinates coord;
+		coord.x = GET_X_LPARAM(lParam);
+		coord.y = GET_Y_LPARAM(lParam);
+		coord.flags = wParam;
+		if (onLeftClick != NULL)
+			onLeftClick(hwnd, coord);
+		break;
+	}
+	case WM_RBUTTONDOWN:
+	{
+		UIManager::Coordinates coord;
+		coord.x = GET_X_LPARAM(lParam);
+		coord.y = GET_Y_LPARAM(lParam);
+		coord.flags = wParam;
+		if (onRightClick != NULL)
+			onRightClick(hwnd, coord);
+		break;
+	}
+	case WM_MBUTTONDOWN:
+	{
+		UIManager::Coordinates coord;
+		coord.x = GET_X_LPARAM(lParam);
+		coord.y = GET_Y_LPARAM(lParam);
+		coord.flags = wParam;
+		if (onMiddleClick != NULL)
+			onMiddleClick(hwnd, coord);
+		break;
+	}
 	case WM_SETFOCUS: //Get Focus
 	{
 		if (onFocus != NULL)
@@ -506,7 +554,7 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 	case WM_NCHITTEST: //Drag and move window by it's content
 	{
 		LRESULT hit = DefWindowProc(wHWND, msg, wParam, lParam);
-		if (hit == HTCLIENT && wDragAndMove) hit = HTCAPTION;
+		if (GetAsyncKeyState(VK_LBUTTON) & VK_LBUTTON && hit == HTCLIENT && wDragAndMove) hit = HTCAPTION;
 		return hit;
 	}
 	case WM_CTLCOLORSTATIC: //Draw views transparent background
@@ -559,8 +607,7 @@ COLORREF HEX(std::string color)
 	return FormatFactory::hexToColor(color);
 }
 
-
-
+//desktop notifications
 //bugfix button view on static
 //do custom button
 //bugfix static color bg keeping stuff
@@ -571,3 +618,5 @@ COLORREF HEX(std::string color)
 DWORD dwStyle = GetWindowLong(object, GWL_STYLE);
 SetWindowLong(object, GWL_STYLE, dwStyle & ~ ES_NUMBER);
 */
+
+/*HWND xd = WindowFromPoint(point);*/
