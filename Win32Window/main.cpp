@@ -13,6 +13,7 @@ void onButtonDoubleClick(HWND object);
 void onButtonHover(HWND object);
 void onButtonEndHover(HWND object);
 void onTextChange(HWND object, std::string text);
+void onNormalRedraw(HWND object, LPDRAWITEMSTRUCT &item);
 
 //Exit Button
 UIManager::View exitButton;
@@ -107,7 +108,12 @@ void onCreate(HWND hwnd) {
 	customb = UIManager::View(UIManager::CustomButton);
 	customb.setLocation(500, 50);
 	customb.setSize(90, 30);
+	customb.setOnNormalRedraw(onNormalRedraw);
 	window.addView(customb);
+}
+
+void onNormalRedraw(HWND object, LPDRAWITEMSTRUCT &item) {
+	//MessageBox(0, "xd", "see U", MB_OK);
 }
 
 void onButtonHover(HWND object) {

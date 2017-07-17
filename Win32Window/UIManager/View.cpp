@@ -14,12 +14,6 @@ limitations under the License.*/
 
 #include "View.h"
 
-std::vector<vOnClick> UIManager::View::onClick;
-std::vector<vOnDoubleClick> UIManager::View::onDoubleClick;
-std::vector<vOnTextChange> UIManager::View::onTextChange;
-std::vector<vOnCursorEnter> UIManager::View::onCursorEnter;
-std::vector<vOnCursorLeave> UIManager::View::onCursorLeave;
-
 void UIManager::View::updateFont()
 {
 	hFont = CreateFont(vFontSize, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET,
@@ -44,12 +38,6 @@ UIManager::View::View(UIManager::ViewType view, int startX, int startY, int endX
 	this->startY = startY;
 	this->endX = endX;
 	this->endY = endY;
-	onClick.push_back(NULL);
-	onDoubleClick.push_back(NULL);
-	onTextChange.push_back(NULL);
-	onCursorEnter.push_back(NULL);
-	onCursorLeave.push_back(NULL);
-	vId = (int)onClick.size() - 1;
 	setType(view);
 }
 
@@ -414,7 +402,7 @@ void UIManager::View::setOnClick(vOnClick callback)
 			SetWindowLong(vHWND, GWL_STYLE, dwStyle | SS_NOTIFY);
 		}
 	}
-	onClick.at(vId) = callback;
+	onClick = callback;
 }
 
 //Buttons, Static || Always
@@ -429,23 +417,38 @@ void UIManager::View::setOnDoubleClick(vOnDoubleClick callback)
 			SetWindowLong(vHWND, GWL_STYLE, dwStyle | SS_NOTIFY);
 		}
 	}
-	onDoubleClick.at(vId) = callback;
+	onDoubleClick = callback;
 }
 
 //All || Always
 void UIManager::View::setOnCursorEnter(vOnCursorEnter callback)
 {
-	onCursorEnter.at(vId) = callback;
+	onCursorEnter = callback;
 }
 
 //All || Always
 void UIManager::View::setOnCursorLeave(vOnCursorLeave callback)
 {
-	onCursorLeave.at(vId) = callback;
+	onCursorLeave = callback;
 }
 
 //EditText || Always
 void UIManager::View::setOnTextChange(vOnTextChange callback)
 {
-	onTextChange.at(vId) = callback;
+	onTextChange = callback;
+}
+
+void UIManager::View::setOnNormalRedraw(vOnNormalRedraw callback)
+{
+	onNormalRedraw = callback;
+}
+
+void UIManager::View::setOnPressRedraw(vOnPressRedraw callback)
+{
+	onPressRedraw = callback;
+}
+
+void UIManager::View::setOnHoverRedraw(vOnHoverRedraw callback)
+{
+	onHoverRedraw = callback;
 }

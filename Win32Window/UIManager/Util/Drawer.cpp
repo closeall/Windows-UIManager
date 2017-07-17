@@ -163,7 +163,7 @@ BOOL UIDrawer::DrawRectangle(LPDRAWITEMSTRUCT &item, RECT rect, INT border, INT 
 	return success;
 }
 
-BOOL DrawFocus(LPDRAWITEMSTRUCT & item) {
+BOOL UIDrawer::DrawFocus(LPDRAWITEMSTRUCT & item) {
 	return DrawFocusRect(item->hDC, &item->rcItem);
 }
 

@@ -15,7 +15,6 @@ limitations under the License.*/
 #ifndef _UI_MANAGER_INTERFACE_HEADER
 #define _UI_MANAGER_INTERFACE_HEADER
 
-//#include "View.h"
 #include "Namespace.h"
 #include <thread>
 #include <iostream>
@@ -38,8 +37,8 @@ typedef std::function<void(HWND hwnd)> vOnCursorEnter;
 typedef std::function<void(HWND hwnd)> vOnCursorLeave;
 
 //View Redraw
-typedef std::function<void(HWND hwnd, LPDRAWITEMSTRUCT lpDrawItem)> vOnNormalRedraw;
-typedef std::function<void(HWND hwnd, LPDRAWITEMSTRUCT lpDrawItem)> vOnHoverRedraw;
-typedef std::function<void(HWND hwnd, LPDRAWITEMSTRUCT lpDrawItem)> vOnPressRedraw;
+typedef std::function<void(HWND hwnd, LPDRAWITEMSTRUCT &lpDrawItem)> vOnNormalRedraw;
+typedef std::function<void(HWND hwnd, LPDRAWITEMSTRUCT &lpDrawItem)> vOnHoverRedraw;
+typedef std::function<void(HWND hwnd, LPDRAWITEMSTRUCT &lpDrawItem)> vOnPressRedraw;
 
 #endif //_UI_MANAGER_INTERFACE_HEADER

@@ -70,11 +70,15 @@ private:
 	void updateFont();
 	//Callback
 	//
-	static std::vector<vOnClick> onClick;
-	static std::vector<vOnDoubleClick> onDoubleClick;
-	static std::vector<vOnTextChange> onTextChange;
-	static std::vector<vOnCursorEnter>onCursorEnter;
-	static std::vector<vOnCursorLeave>onCursorLeave;
+	vOnClick onClick;
+	vOnDoubleClick onDoubleClick;
+	vOnTextChange onTextChange;
+	vOnCursorEnter onCursorEnter;
+	vOnCursorLeave onCursorLeave;
+
+	vOnNormalRedraw onNormalRedraw;
+	vOnPressRedraw onPressRedraw;
+	vOnHoverRedraw onHoverRedraw;
 public:
 	View();
 	View(UIManager::ViewType view, int startX = 50, int startY = 50, int endX = 150, int endY = 25);
@@ -112,6 +116,9 @@ public:
 	void setOnCursorEnter(vOnCursorEnter callback);
 	void setOnCursorLeave(vOnCursorLeave callback);
 	void setOnTextChange(vOnTextChange callback);
+	void setOnNormalRedraw(vOnNormalRedraw callback);
+	void setOnPressRedraw(vOnPressRedraw callback);
+	void setOnHoverRedraw(vOnHoverRedraw callback);
 };
 
 #endif //#define _UI_MANAGER_VIEW_HEADER

@@ -454,7 +454,7 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 		vObject object = vObjects.at(viewLocByRef(wParam));
 		if (object.view->vId != wObjHover) {
 			//On enter
-			vOnCursorEnter tch = object.view->onCursorEnter.at(object.view->vId);
+			vOnCursorEnter tch = object.view->onCursorEnter;
 			if (tch != NULL)
 				tch(object.manager);
 			//Custom Button Manager
@@ -464,7 +464,7 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 			//On leave
 			if (wObjHover != -1) {
 				vObject objectl = vObjects.at(wObjHover);
-				vOnCursorLeave tch = objectl.view->onCursorLeave.at(objectl.view->vId);
+				vOnCursorLeave tch = objectl.view->onCursorLeave;
 				if (tch != NULL)
 					tch(object.manager);
 				//Custom Button Manager
@@ -487,7 +487,7 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 			TCHAR buff[1024];
 			GetWindowText((HWND)lParam, buff, sizeof(buff));
 			object.view->vText = buff;
-			vOnTextChange tch = object.view->onTextChange.at(object.view->vId);
+			vOnTextChange tch = object.view->onTextChange;
 			if (tch != NULL)
 				tch(object.manager, buff);
 			break;
@@ -496,7 +496,7 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 		case BN_DBLCLK:
 		{
 			vObject object = vObjects.at(viewLocByRef(lParam));
-			vOnDoubleClick btton = object.view->onDoubleClick.at(object.view->vId);
+			vOnDoubleClick btton = object.view->onDoubleClick;
 			if (btton != NULL)
 				btton(object.manager);
 			break;
@@ -504,7 +504,7 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 		case BN_CLICKED:
 		{
 			vObject object = vObjects.at(viewLocByRef(lParam));
-			vOnClick btton = object.view->onClick.at(object.view->vId);
+			vOnClick btton = object.view->onClick;
 			if (btton != NULL)
 				btton(object.manager);
 			break;
@@ -513,7 +513,7 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 		case STN_DBLCLK:
 		{
 			vObject object = vObjects.at(viewLocByRef(lParam));
-			vOnDoubleClick btton = object.view->onDoubleClick.at(object.view->vId);
+			vOnDoubleClick btton = object.view->onDoubleClick;
 			if (btton != NULL)
 				btton(object.manager);
 			break;
@@ -598,37 +598,31 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 			return (LRESULT)CreateSolidBrush(object.view->vBackColor);
 		}
 	}
-	case WM_DRAWITEM: //Draw control data
+	case WM_DRAWITEM: //Draw Custom control data
 	{
 		LPDRAWITEMSTRUCT lpDrawItem = (LPDRAWITEMSTRUCT)lParam;
 		vObject object = vObjects.at(viewLocByRef((LPARAM)lpDrawItem->hwndItem));
-		if (lpDrawItem->CtlType != ODT_BUTTON || object.view->vType != CustomButton)
+
+		if (lpDrawItem->CtlType != ODT_BUTTON || object.view->vType != CustomButton) //Not button??
 			return TRUE;
 
-		int state;
-		state = lpDrawItem->itemState;
-		if (state & ODS_SELECTED)
+		if (lpDrawItem->itemState & ODS_SELECTED) //Selected??
 		{
-			//click
-			HBRUSH h = UIDrawer::CreateComplexGradientBrush(lpDrawItem, HEX("#ff0000"), HEX("#ffffff"));
-			UIDrawer::DrawRectangle(lpDrawItem, object.view->getSizeRECT(), 0, 3, UIDrawer::NullLine, HEX("#00897B"), h);
+			//Click
+			vOnPressRedraw btton = object.view->onPressRedraw;
+			if (btton != NULL)
+				btton(object.manager, lpDrawItem);
 		} else {
 			if (object.view->vId == wObjHover) {
 				//Hovered
-				//DrawRectangle(lpDrawItem->hDC, 0, 0, object.view->endX, object.view->endY, HEX("#FFE91A"));
-				HBRUSH selectbrush = UIDrawer::CreateBitmapBrush(UIManager::Bitmap("header.bmp"));
-				UIDrawer::DrawBitmap(lpDrawItem, 0, 0, UIManager::Bitmap("m.bmp"));
-				UIDrawer::DrawCircle(lpDrawItem, object.view->getSizeRECT(), 5, UIDrawer::DotLine, NULL, selectbrush);
+				vOnHoverRedraw btton = object.view->onHoverRedraw;
+				if (btton != NULL)
+					btton(object.manager, lpDrawItem);
 			} else {
 				//Normal
-				//Select our color when the button is selected
-				//object.view->onNormalRedraw(object.view, lpDrawItem);
-				HBRUSH selectbrush = UIDrawer::CreateGradientBrush(lpDrawItem, HEX("#009688"), HEX("#00897B"));
-
-				UIDrawer::DrawRectangle(lpDrawItem, object.view->getSizeRECT(), 3, 3, UIDrawer::NullLine, HEX("#00897B"), selectbrush);
-				
-				HFONT font = UIDrawer::DrawFont(18, 0, 700, false, false, false, "Roboto");
-				UIDrawer::DrawString(lpDrawItem, object.view->getSizeRECT(), "Button", 19, UIDrawer::Center, UIDrawer::Center, HEX("#FFFFFF"), font);
+				vOnNormalRedraw btton = object.view->onNormalRedraw;
+				if (btton != NULL)
+					btton(object.manager, lpDrawItem);
 			}
 		}
 		break;
