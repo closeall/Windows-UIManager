@@ -224,6 +224,11 @@ void UIManager::WindowManager::setBackground(HBRUSH brush)
 	wbColor = brush;
 }
 
+void UIManager::WindowManager::setBackground(HBITMAP brush)
+{
+	wbColor = UIDrawer::CreateBitmapBrush(brush);
+}
+
 //Before
 void UIManager::WindowManager::allowMaximizeButton(bool allow)
 {

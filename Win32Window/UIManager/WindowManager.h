@@ -105,6 +105,7 @@ public:
 	void setCursor(HCURSOR cursor);
 	void setIcon(HICON icon);
 	void setBackground(HBRUSH brush);
+	void setBackground(HBITMAP brush);
 	void allowMaximizeButton(bool allow);
 	void allowMinimizeButton(bool allow);
 	void allowResize(bool allow);
