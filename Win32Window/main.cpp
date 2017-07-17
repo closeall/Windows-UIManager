@@ -106,6 +106,7 @@ void onCreate(HWND hwnd) {
 	//Custom one
 	customb = UIManager::View(UIManager::CustomButton);
 	customb.setLocation(500, 50);
+	customb.setSize(90, 30);
 	window.addView(customb);
 }
 

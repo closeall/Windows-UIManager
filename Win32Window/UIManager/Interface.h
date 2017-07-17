@@ -15,6 +15,7 @@ limitations under the License.*/
 #ifndef _UI_MANAGER_INTERFACE_HEADER
 #define _UI_MANAGER_INTERFACE_HEADER
 
+//#include "View.h"
 #include "Namespace.h"
 #include <thread>
 #include <iostream>

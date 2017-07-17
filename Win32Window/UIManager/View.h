@@ -52,10 +52,10 @@ private:
 	std::string vText;
 	HBITMAP vBitMap;
 	HFONT hFont;
-	std::string vFont = "Segoe UI";
+	std::string vFont = DEF_FONT_TYPE;
 	COLORREF vFontColor;
 	COLORREF vBackColor = HOLLOW_BRUSH;
-	int vFontSize = 13;
+	int vFontSize = DEF_FONT_SIZE;
 	//Edit
 	int maxInput = 0;
 	//ProgressBar
@@ -101,6 +101,11 @@ public:
 	void setProgressState(ProgressState state);
 	//Others
 	HWND getHWND();
+	RECT getSizeRECT();
+	int getLeft();
+	int getTop();
+	int getRight();
+	int getBottom();
 	void redrawView();
 	void setOnClick(vOnClick callback);
 	void setOnDoubleClick(vOnDoubleClick callback);

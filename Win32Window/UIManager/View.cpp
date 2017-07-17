@@ -361,6 +361,36 @@ HWND UIManager::View::getHWND()
 	return vHWND;
 }
 
+RECT UIManager::View::getSizeRECT()
+{
+	RECT rect;
+	rect.left = 0;
+	rect.top = 0;
+	rect.right = endX;
+	rect.bottom = endY;
+	return rect;
+}
+
+int UIManager::View::getLeft()
+{
+	return startX;
+}
+
+int UIManager::View::getTop()
+{
+	return startY;
+}
+
+int UIManager::View::getRight()
+{
+	return endX;
+}
+
+int UIManager::View::getBottom()
+{
+	return endY;
+}
+
 
 void UIManager::View::redrawView()
 {

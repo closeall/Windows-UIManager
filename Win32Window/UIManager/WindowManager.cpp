@@ -304,12 +304,16 @@ void UIManager::WindowManager::setAlpha(int percent)
 	SetLayeredWindowAttributes(wHWND, 0, (255 * percent) / 100, LWA_ALPHA);
 }
 
-//DEBUG
-void UIManager::WindowManager::test()
+void UIManager::WindowManager::inflateShadow()
 {
-	//createView();
-	SetWindowLong(wHWND, GWL_EXSTYLE, GetWindowLong(wHWND, GWL_EXSTYLE) | WS_EX_LAYERED);
-	SetLayeredWindowAttributes(wHWND, RGB(255, 0, 0), 0, LWA_COLORKEY);
+	wClassStyle = CS_DROPSHADOW;
+}
+
+//DEBUG
+void UIManager::WindowManager::UIM_VERSION()
+{
+	//UIMANAGER_VERSION
+	MessageBox(0, std::to_string(UIMANAGER_VERSION).c_str(), "UIManager Version", MB_OK);
 }
 
 void UIManager::WindowManager::setOnLeftClick(wLeftClickCallBack callback)
@@ -372,6 +376,7 @@ void UIManager::WindowManager::build()
 	winClass.lpszClassName = this->wiName.c_str();
 	winClass.lpfnWndProc = WndProc; //Execution callback
 	//Load default editable ellements
+	winClass.style = wClassStyle;
 	winClass.hCursor = wCursor;		/*Default*/
 	winClass.hIcon = wIcon;								/*Alt+Tab Dialog*/
 	winClass.hbrBackground = wbColor;
@@ -602,19 +607,28 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 
 		int state;
 		state = lpDrawItem->itemState;
-		SetBkMode(lpDrawItem->hDC, TRANSPARENT); //BG Transp
-		RoundRect(lpDrawItem->hDC, lpDrawItem->rcItem.left, lpDrawItem->rcItem.top, lpDrawItem->rcItem.right, lpDrawItem->rcItem.bottom, 25, 25);
 		if (state & ODS_SELECTED)
 		{
 			//click
-			DrawBitmap(lpDrawItem->hDC, 0, 0, UIManager::Bitmap("m.bmp"));
+			HBRUSH h = UIDrawer::CreateComplexGradientBrush(lpDrawItem, HEX("#ff0000"), HEX("#ffffff"));
+			UIDrawer::DrawRectangle(lpDrawItem, object.view->getSizeRECT(), 0, 3, UIDrawer::NullLine, HEX("#00897B"), h);
 		} else {
 			if (object.view->vId == wObjHover) {
 				//Hovered
-				DrawBitmap(lpDrawItem->hDC, 0, 0, UIManager::Bitmap("m.bmp"));
+				//DrawRectangle(lpDrawItem->hDC, 0, 0, object.view->endX, object.view->endY, HEX("#FFE91A"));
+				HBRUSH selectbrush = UIDrawer::CreateBitmapBrush(UIManager::Bitmap("header.bmp"));
+				UIDrawer::DrawBitmap(lpDrawItem, 0, 0, UIManager::Bitmap("m.bmp"));
+				UIDrawer::DrawCircle(lpDrawItem, object.view->getSizeRECT(), 5, UIDrawer::DotLine, NULL, selectbrush);
 			} else {
 				//Normal
-				DrawBitmap(lpDrawItem->hDC, 0, 0, UIManager::Bitmap("u.bmp"));
+				//Select our color when the button is selected
+				//object.view->onNormalRedraw(object.view, lpDrawItem);
+				HBRUSH selectbrush = UIDrawer::CreateGradientBrush(lpDrawItem, HEX("#009688"), HEX("#00897B"));
+
+				UIDrawer::DrawRectangle(lpDrawItem, object.view->getSizeRECT(), 3, 3, UIDrawer::NullLine, HEX("#00897B"), selectbrush);
+				
+				HFONT font = UIDrawer::DrawFont(18, 0, 700, false, false, false, "Roboto");
+				UIDrawer::DrawString(lpDrawItem, object.view->getSizeRECT(), "Button", 19, UIDrawer::Center, UIDrawer::Center, HEX("#FFFFFF"), font);
 			}
 		}
 		break;
@@ -640,6 +654,7 @@ COLORREF HEX(std::string color)
 //desktop notifications
 //do custom button
 
+//redraw size image
 //custom pb
 /*
 DWORD dwStyle = GetWindowLong(object, GWL_STYLE);

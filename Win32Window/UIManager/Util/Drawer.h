@@ -10,8 +10,22 @@
 #include <afxwin.h>
 #include <string>
 
-BOOL DrawBitmap(HDC hDC, INT x, INT y, HBITMAP hBitmap, DWORD dwROP = SRCCOPY);
+#include "../Namespace.h"
 
+enum UIDrawer::LineType { SolidLine, DashLine, DotLine, NullLine};
+enum UIDrawer::TextMargin { Left, Center, Top, Bottom, Right, Normal};
+
+HBRUSH UIDrawer::CreateComplexGradientBrush(LPDRAWITEMSTRUCT &item, COLORREF fcolor, COLORREF scolor, DWORD def = GRADIENT_FILL_RECT_H);
+HBRUSH UIDrawer::CreateBrush(COLORREF color);
+HBRUSH UIDrawer::CreateBitmapBrush(HBITMAP bitmap);
+HBRUSH UIDrawer::CreateGradientBrush(LPDRAWITEMSTRUCT &item, COLORREF top, COLORREF bottom);
+
+HFONT UIDrawer::DrawFont(int size, int angle, DWORD weight, bool italic, bool underline, bool strike, std::string font = DEF_FONT_TYPE);
+BOOL UIDrawer::DrawBitmap(LPDRAWITEMSTRUCT &item, INT x, INT y, HBITMAP hBitmap, DWORD dwROP = SRCCOPY);
+BOOL UIDrawer::DrawCircle(LPDRAWITEMSTRUCT & item, RECT rect, INT linesize = NULL, UIDrawer::LineType line = UIDrawer::SolidLine, COLORREF linecolor = NULL, HBRUSH hbr = NULL);
+BOOL UIDrawer::DrawRectangle(LPDRAWITEMSTRUCT &item, RECT rect, INT border, INT linesize, UIDrawer::LineType line, COLORREF linecolor, HBRUSH fillcolor);
+BOOL UIDrawer::DrawString(LPDRAWITEMSTRUCT & item, RECT rect, std::string text, INT size = DEF_FONT_SIZE, UIDrawer::TextMargin horizontal = UIDrawer::Normal, UIDrawer::TextMargin vertical = UIDrawer::Normal, COLORREF color = NULL, HFONT font = NULL);
+BOOL UIDrawer::DrawFocus(LPDRAWITEMSTRUCT & item);
 #endif //_UI_MANAGER_UTIL_DRAWER_HEADER
 
 /*case WM_DRAWITEM: //Draw control data

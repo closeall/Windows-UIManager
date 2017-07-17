@@ -20,6 +20,7 @@ limitations under the License.*/
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' " "version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"") 
 #endif
 
+#define UIMANAGER_VERSION 12
 #define _AFXDLL
 #include <SDKDDKVer.h>
 #include <afxwin.h>
@@ -62,6 +63,7 @@ private:
 	DWORD wFlags = WS_VISIBLE | WS_SYSMENU | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_THICKFRAME | BS_NOTIFY;
 	HCURSOR wCursor = LoadCursor(0, IDC_ARROW);
 	HICON wIcon = LoadIcon(NULL, IDI_APPLICATION);
+	DWORD wClassStyle;
 	HBRUSH wbColor;
 	int startX;
 	int startY;
@@ -110,7 +112,8 @@ public:
 	void allowDragAndMove(bool allow);
 	void setTransparentKeyColor(COLORREF color);
 	void setAlpha(int percent); //100 -> 0
-	void test();
+	void inflateShadow();
+	void UIM_VERSION(); //Get Code Version
 	//Others
 	void setOnLeftClick(wLeftClickCallBack callback = NULL);
 	void setOnRightClick(wRightClickCallBack callback = NULL);

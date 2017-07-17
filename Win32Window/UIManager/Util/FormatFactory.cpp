@@ -22,7 +22,7 @@ static int HexadecimalToDecimal(std::string hex) {
 	size_t hexLength = hex.length();
 	double dec = 0;
 
-	for (int i = 0; i < hexLength; ++i)
+	for (unsigned int i = 0; i < hexLength; ++i)
 	{
 		char b = hex[i];
 
