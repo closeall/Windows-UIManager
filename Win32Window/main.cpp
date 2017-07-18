@@ -41,9 +41,10 @@ UIManager::View customb;
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 	window.setInitialData(hInstance, "Ventana de Prueba", 240, 120);
 	window.setSize(850, 520);
+	//window.setBackground(HEX("#ff0000"));
 	window.setIcon(UIManager::Icon("g.ico"));
-	window.allowResize(false);
-	window.disallowTitleBar(true);
+	//window.allowResize(false);
+	//window.disallowTitleBar(true);
 	window.allowDragAndMove(true);
 	window.allowMaximizeButton(false);
 	//Callbacks
@@ -53,7 +54,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 }
 
 void onCreate(HWND hwnd) {
-	//Background
+	/*//Background
 	pictureBox = UIManager::View(UIManager::PictureBox, 0, 0);
 	pictureBox.setPictureRessource(UIManager::Bitmap("bg.bmp"));
 	window.addView(pictureBox);
@@ -109,7 +110,7 @@ void onCreate(HWND hwnd) {
 	customb.setLocation(500, 50);
 	customb.setSize(90, 30);
 	customb.setOnNormalRedraw(onNormalRedraw);
-	window.addView(customb);
+	window.addView(customb);*/
 }
 
 void onNormalRedraw(HWND object, LPDRAWITEMSTRUCT &item) {

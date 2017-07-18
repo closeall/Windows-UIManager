@@ -64,7 +64,7 @@ private:
 	HCURSOR wCursor = LoadCursor(0, IDC_ARROW);
 	HICON wIcon = LoadIcon(NULL, IDI_APPLICATION);
 	DWORD wClassStyle;
-	HBRUSH wbColor;
+	HBRUSH wbColor = GetSysColorBrush(COLOR_3DFACE); //GetSysColorBrush(COLOR_WINDOW)
 	int startX;
 	int startY;
 	int endX;
@@ -104,7 +104,7 @@ public:
 	//Borders & Tool Bar
 	void setCursor(HCURSOR cursor);
 	void setIcon(HICON icon);
-	void setBackground(HBRUSH brush);
+	void setBackground(COLORREF brush);
 	void setBackground(HBITMAP brush);
 	void allowMaximizeButton(bool allow);
 	void allowMinimizeButton(bool allow);

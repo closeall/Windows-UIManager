@@ -219,9 +219,9 @@ void UIManager::WindowManager::setIcon(HICON icon)
 }
 
 //Before
-void UIManager::WindowManager::setBackground(HBRUSH brush)
+void UIManager::WindowManager::setBackground(COLORREF brush)
 {
-	wbColor = brush;
+	wbColor = CreateSolidBrush(brush);
 }
 
 void UIManager::WindowManager::setBackground(HBITMAP brush)
@@ -456,28 +456,30 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 	}
 	case WM_SETCURSOR: //Manage focus
 	{
-		vObject object = vObjects.at(viewLocByRef(wParam));
-		if (object.view->vId != wObjHover) {
-			//On enter
-			vOnCursorEnter tch = object.view->onCursorEnter;
-			if (tch != NULL)
-				tch(object.manager);
-			//Custom Button Manager
-			if (object.view->vType == CustomButton) {
-				InvalidateRect(object.manager, NULL, FALSE);
-			}
-			//On leave
-			if (wObjHover != -1) {
-				vObject objectl = vObjects.at(wObjHover);
-				vOnCursorLeave tch = objectl.view->onCursorLeave;
+		if (vObjects.size() > 0) { //Only if exist any view
+			vObject object = vObjects.at(viewLocByRef(wParam));
+			if (object.view->vId != wObjHover) {
+				//On enter
+				vOnCursorEnter tch = object.view->onCursorEnter;
 				if (tch != NULL)
 					tch(object.manager);
 				//Custom Button Manager
-				if (objectl.view->vType == CustomButton) {
-					InvalidateRect(objectl.manager, NULL, FALSE);
+				if (object.view->vType == CustomButton) {
+					InvalidateRect(object.manager, NULL, FALSE);
 				}
+				//On leave
+				if (wObjHover != -1) {
+					vObject objectl = vObjects.at(wObjHover);
+					vOnCursorLeave tch = objectl.view->onCursorLeave;
+					if (tch != NULL)
+						tch(object.manager);
+					//Custom Button Manager
+					if (objectl.view->vType == CustomButton) {
+						InvalidateRect(objectl.manager, NULL, FALSE);
+					}
+				}
+				wObjHover = object.view->vId;
 			}
-			wObjHover = object.view->vId;
 		}
 		break;
 	}
@@ -602,6 +604,7 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 		else {
 			return (LRESULT)CreateSolidBrush(object.view->vBackColor);
 		}
+		break;
 	}
 	case WM_DRAWITEM: //Draw Custom control data
 	{
