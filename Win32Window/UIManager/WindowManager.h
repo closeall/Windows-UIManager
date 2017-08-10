@@ -54,9 +54,11 @@ private:
 	HINSTANCE hInstance;
 	WNDCLASSEX winClass; /* Data structure for the windowclass */
 	MSG msg;
-	static HWND wHWND;
+	static std::vector<HWND> wHWND;
 	static std::vector<vObject> vObjects;
+	int wId = -1;
 	bool wCreated = false;
+	static std::vector<UIManager::WindowManager *> wManager;
 	//Window Data
 	std::string wiName;
 	DWORD ExwFlags;
@@ -74,22 +76,23 @@ private:
 	//Private functions
 	void createView();
 	static int viewLocByRef(LPARAM hwnd);
+	static int windowLocByRef(HWND hwnd);
 	static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	//Callback
 	//
-	static wLeftClickCallBack onLeftClick;
-	static wRightClickCallBack onRightClick;
-	static wMiddleClickCallBack onMiddleClick;
-	static wCreateCallBack onCreate;
-	static wFocusCallBack onFocus;
-	static wDestroyCallBack onDestroy;
-	static wPersonalizedCallBack onMessageRec;
+	static std::vector<wLeftClickCallBack> onLeftClick;
+	static std::vector<wRightClickCallBack> onRightClick;
+	static std::vector<wMiddleClickCallBack> onMiddleClick;
+	static std::vector<wCreateCallBack> onCreate;
+	static std::vector<wFocusCallBack> onFocus;
+	static std::vector<wDestroyCallBack> onDestroy;
+	static std::vector<wPersonalizedCallBack> onMessageRec;
 public:
 	//Creation Functions
 	//
 	WindowManager();
 	//Window
-	void setInitialData(HINSTANCE & hInstance, std::string wiName = "Window Name", int startX = 300, int startY = 200, int endX = 120, int endY = 400);
+	void setInitialData(HINSTANCE hInstance, std::string wiName = "Window Name", int startX = 300, int startY = 200, int endX = 120, int endY = 400);
 	void setHInstance(HINSTANCE hInstance);
 	void setText(std::string text);
 	void setLocation(int xloc, int yloc);
@@ -127,6 +130,7 @@ public:
 	void minimize();
 	void destroy();
 	HWND getHWND();
+	HINSTANCE getHINSTANCE();
 	//Runtime Functions
 	//
 	void addView(UIManager::View &view);

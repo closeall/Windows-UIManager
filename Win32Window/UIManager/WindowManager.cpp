@@ -14,18 +14,19 @@ limitations under the License.*/
 
 #include "WindowManager.h"
 
-wLeftClickCallBack UIManager::WindowManager::onLeftClick;
-wRightClickCallBack UIManager::WindowManager::onRightClick;
-wMiddleClickCallBack UIManager::WindowManager::onMiddleClick;
-wCreateCallBack UIManager::WindowManager::onCreate;
-wFocusCallBack UIManager::WindowManager::onFocus;
-wDestroyCallBack UIManager::WindowManager::onDestroy;
-wPersonalizedCallBack UIManager::WindowManager::onMessageRec;
+std::vector<wLeftClickCallBack> UIManager::WindowManager::onLeftClick;
+std::vector<wRightClickCallBack> UIManager::WindowManager::onRightClick;
+std::vector<wMiddleClickCallBack> UIManager::WindowManager::onMiddleClick;
+std::vector<wCreateCallBack> UIManager::WindowManager::onCreate;
+std::vector<wFocusCallBack> UIManager::WindowManager::onFocus;
+std::vector<wDestroyCallBack> UIManager::WindowManager::onDestroy;
+std::vector<wPersonalizedCallBack> UIManager::WindowManager::onMessageRec;
 
-HWND UIManager::WindowManager::wHWND;
+std::vector<HWND> UIManager::WindowManager::wHWND;
 bool UIManager::WindowManager::wDragAndMove;
 int UIManager::WindowManager::wObjHover = -1;
 std::vector<vObject> UIManager::WindowManager::vObjects;
+std::vector<UIManager::WindowManager *> UIManager::WindowManager::wManager;
 
 //Private
 //
@@ -33,7 +34,7 @@ void UIManager::WindowManager::createView()
 {
 	//Create Window
 	this->wCreated = true;
-	wHWND = CreateWindowEx(
+	CreateWindowEx(
 		ExwFlags,
 		this->wiName.c_str(),			/* Title Class */
 		this->wiName.c_str(),			/* Title Text */
@@ -65,18 +66,28 @@ int UIManager::WindowManager::viewLocByRef(LPARAM hwnd)
 	return 0;
 }
 
+int UIManager::WindowManager::windowLocByRef(HWND hwnd)
+{
+	for (unsigned int i = 0; i < vObjects.size(); i++) {
+		if ((HWND)hwnd == wHWND.at(i)) {
+			return i;
+		}
+	}
+	return 0;
+}
+
 //Public
 //
 UIManager::WindowManager::WindowManager() : hInstance(NULL)
 {
+	setInitialData(hInstance);
 	#ifdef _LEGACY_UI
 		SetWindowTheme(hwnd, L" ", L" ");
 	#endif
-	wDragAndMove = false;
 }
 
 //Before
-void UIManager::WindowManager::setInitialData(HINSTANCE & hInstance, std::string wiName, int startX, int startY, int endX, int endY)
+void UIManager::WindowManager::setInitialData(HINSTANCE hInstance, std::string wiName, int startX, int startY, int endX, int endY)
 {
 	this->wiName = wiName;
 	this->hInstance = hInstance;
@@ -84,6 +95,19 @@ void UIManager::WindowManager::setInitialData(HINSTANCE & hInstance, std::string
 	this->startY = startY;
 	this->endX = endX;
 	this->endY = endY;
+	if (wId < 0) {
+		wHWND.push_back(HWND());
+		wId = static_cast<int>(wHWND.size()) - 1;
+		onLeftClick.push_back(NULL);
+		onRightClick.push_back(NULL);
+		onMiddleClick.push_back(NULL);
+		onCreate.push_back(NULL);
+		onFocus.push_back(NULL);
+		onDestroy.push_back(NULL);
+		onMessageRec.push_back(NULL);
+		wManager.push_back(this);
+		wDragAndMove = false;
+	}
 }
 
 //Before
@@ -97,7 +121,7 @@ void UIManager::WindowManager::setText(std::string text)
 {
 	wiName = text;
 	if (wCreated) {
-		SetWindowText(wHWND, text.c_str());
+		SetWindowText(wHWND.at(wId), text.c_str());
 	}
 }
 
@@ -107,7 +131,7 @@ void UIManager::WindowManager::setLocation(int xloc, int yloc)
 	startX = xloc;
 	startY = yloc;
 	if (wCreated) {
-		SetWindowPos(wHWND, NULL, startX, startY, 0, 0, SWP_NOSIZE);
+		SetWindowPos(wHWND.at(wId), NULL, startX, startY, 0, 0, SWP_NOSIZE);
 	}
 }
 
@@ -117,7 +141,7 @@ void UIManager::WindowManager::setSize(int xsize, int ysize)
 	endX = xsize;
 	endY = ysize;
 	if (wCreated) {
-		SetWindowPos(wHWND, NULL, 0, 0, xsize, ysize, SWP_NOMOVE);
+		SetWindowPos(wHWND.at(wId), NULL, 0, 0, xsize, ysize, SWP_NOMOVE);
 	}
 }
 
@@ -133,10 +157,10 @@ void UIManager::WindowManager::setVisible(bool visible)
 	}
 	else {
 		if (visible) {
-			SetWindowPos(wHWND, NULL, 0, 0, 9, 9, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+			SetWindowPos(wHWND.at(wId), NULL, 0, 0, 9, 9, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
 		}
 		else {
-			SetWindowPos(wHWND, NULL, 0, 0, 9, 9, SWP_NOMOVE | SWP_NOSIZE | SWP_HIDEWINDOW);
+			SetWindowPos(wHWND.at(wId), NULL, 0, 0, 9, 9, SWP_NOMOVE | SWP_NOSIZE | SWP_HIDEWINDOW);
 		}
 	}
 }
@@ -153,12 +177,7 @@ void UIManager::WindowManager::setEnabled(bool enabled)
 		}
 	}
 	else {
-		if (enabled) {
-			EnableWindow(wHWND, true);
-		}
-		else {
-			EnableWindow(wHWND, false);
-		}
+		EnableWindow(wHWND.at(wId), enabled);
 	}
 }
 
@@ -194,7 +213,7 @@ void UIManager::WindowManager::setFocusable(bool focusable)
 void UIManager::WindowManager::makeTop()
 {
 	if (wCreated) {
-		SetWindowPos(wHWND, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+		SetWindowPos(wHWND.at(wId), HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 	}
 }
 
@@ -202,7 +221,7 @@ void UIManager::WindowManager::makeTop()
 void UIManager::WindowManager::makeBottom()
 {
 	if (wCreated) {
-		SetWindowPos(wHWND, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+		SetWindowPos(wHWND.at(wId), HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 	}
 }
 
@@ -293,20 +312,20 @@ void UIManager::WindowManager::setTransparentKeyColor(COLORREF color)
 	if (wCreated) {
 		wbColor = CreateSolidBrush(color);
 		#ifdef _WIN64
-		SetClassLongPtr(wHWND, GCLP_HBRBACKGROUND, (LONG)(__int64)wbColor);
+		SetClassLongPtr(wHWND.at(wId), GCLP_HBRBACKGROUND, (LONG)(__int64)wbColor);
 		#else
 		SetClassLongPtr(wHWND, GCLP_HBRBACKGROUND, (LONG)(long)wbColor);
 		#endif
-		SetWindowLong(wHWND, GWL_EXSTYLE, GetWindowLong(wHWND, GWL_EXSTYLE) | WS_EX_LAYERED);
-		SetLayeredWindowAttributes(wHWND, color, 0, LWA_COLORKEY);
+		SetWindowLong(wHWND.at(wId), GWL_EXSTYLE, GetWindowLong(wHWND.at(wId), GWL_EXSTYLE) | WS_EX_LAYERED);
+		SetLayeredWindowAttributes(wHWND.at(wId), color, 0, LWA_COLORKEY);
 	}
 }
 
 //After
 void UIManager::WindowManager::setAlpha(int percent)
 {
-	SetWindowLong(wHWND, GWL_EXSTYLE, GetWindowLong(wHWND, GWL_EXSTYLE) | WS_EX_LAYERED);
-	SetLayeredWindowAttributes(wHWND, 0, (255 * percent) / 100, LWA_ALPHA);
+	SetWindowLong(wHWND.at(wId), GWL_EXSTYLE, GetWindowLong(wHWND.at(wId), GWL_EXSTYLE) | WS_EX_LAYERED);
+	SetLayeredWindowAttributes(wHWND.at(wId), 0, (255 * percent) / 100, LWA_ALPHA);
 }
 
 void UIManager::WindowManager::inflateShadow()
@@ -323,17 +342,17 @@ void UIManager::WindowManager::UIM_VERSION()
 
 void UIManager::WindowManager::setOnLeftClick(wLeftClickCallBack callback)
 {
-	onLeftClick = callback;
+	onLeftClick.at(wId) = callback;
 }
 
 void UIManager::WindowManager::setOnRightClick(wRightClickCallBack callback)
 {
-	onRightClick = callback;
+	onRightClick.at(wId) = callback;
 }
 
 void UIManager::WindowManager::setOnMiddleClick(wMiddleClickCallBack callback)
 {
-	onMiddleClick = callback;
+	onMiddleClick.at(wId) = callback;
 }
 
 //Before
@@ -352,25 +371,25 @@ void UIManager::WindowManager::setTopMost(bool active)
 //Before
 void UIManager::WindowManager::setOnCreate(wCreateCallBack callback)
 {
-	onCreate = callback;
+	onCreate.at(wId) = callback;
 }
 
 //Before
 void UIManager::WindowManager::setOnFocus(wFocusCallBack callback)
 {
-	onFocus = callback;
+	onFocus.at(wId) = callback;
 }
 
 //Before
 void UIManager::WindowManager::setOnDestroy(wDestroyCallBack callback)
 {
-	onDestroy = callback;
+	onDestroy.at(wId) = callback;
 }
 
 //Before
 void UIManager::WindowManager::setPersonalizedHandler(wPersonalizedCallBack callback)
 {
-	onMessageRec = callback;
+	onMessageRec.at(wId) = callback;
 }
 
 void UIManager::WindowManager::build()
@@ -395,18 +414,23 @@ void UIManager::WindowManager::build()
 //After
 void UIManager::WindowManager::minimize()
 {
-	CloseWindow(wHWND);
+	CloseWindow(wHWND.at(wId));
 }
 
 //After
 void UIManager::WindowManager::destroy()
 {
-	DestroyWindow(wHWND);
+	DestroyWindow(wHWND.at(wId));
 }
 
 HWND UIManager::WindowManager::getHWND()
 {
-	return wHWND;
+	return wHWND.at(wId);
+}
+
+HINSTANCE UIManager::WindowManager::getHINSTANCE()
+{
+	return hInstance;
 }
 
 void UIManager::WindowManager::addView(UIManager::View &view)
@@ -418,7 +442,7 @@ void UIManager::WindowManager::addView(UIManager::View &view)
 	HWND hwnd = CreateWindowW(FormatFactory::StringToWString(type).c_str(), FormatFactory::StringToWString(view.vText).c_str(),
 		view.vFlags,
 		view.startX, view.startY, view.endX, view.endY,
-		wHWND, (HMENU)(UINT_PTR)nextID, NULL, NULL);
+		wHWND.at(wId), (HMENU)(UINT_PTR)nextID, NULL, NULL);
 	if (view.vType == PictureBox) {
 		SendMessage(hwnd, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)view.vBitMap);
 	}
@@ -436,7 +460,7 @@ void UIManager::WindowManager::addView(UIManager::View &view)
 	object.manager = hwnd;
 	view.vCreated = true;
 	view.vHWND = hwnd;
-	view.wHWND = wHWND;
+	view.wHWND = wHWND.at(wId);
 	view.vId = nextID;
 	view.updateFont();
 	vObjects.push_back(object);
@@ -444,14 +468,14 @@ void UIManager::WindowManager::addView(UIManager::View &view)
 
 LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-
+	int wId = windowLocByRef(hwnd);
 	switch (msg)
 	{
 	case WM_CREATE: //On Window Create
 	{
-		wHWND = hwnd;
-		if (onCreate != NULL)
-			onCreate(hwnd);
+		wHWND.at(wId) = hwnd;
+		if (onCreate.at(wId) != NULL)
+			onCreate.at(wId)(wManager.at(wId));
 		break;
 	}
 	case WM_SETCURSOR: //Manage focus
@@ -534,8 +558,8 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 		coord.x = GET_X_LPARAM(lParam);
 		coord.y = GET_Y_LPARAM(lParam);
 		coord.flags = wParam;
-		if (onLeftClick != NULL)
-			onLeftClick(hwnd, coord);
+		if (onLeftClick.at(wId) != NULL)
+			onLeftClick.at(wId)(wManager.at(wId), coord);
 		break;
 	}
 	case WM_RBUTTONDOWN:
@@ -544,8 +568,8 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 		coord.x = GET_X_LPARAM(lParam);
 		coord.y = GET_Y_LPARAM(lParam);
 		coord.flags = wParam;
-		if (onRightClick != NULL)
-			onRightClick(hwnd, coord);
+		if (onRightClick.at(wId) != NULL)
+			onRightClick.at(wId)(wManager.at(wId), coord);
 		break;
 	}
 	case WM_MBUTTONDOWN:
@@ -554,25 +578,25 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 		coord.x = GET_X_LPARAM(lParam);
 		coord.y = GET_Y_LPARAM(lParam);
 		coord.flags = wParam;
-		if (onMiddleClick != NULL)
-			onMiddleClick(hwnd, coord);
+		if (onMiddleClick.at(wId) != NULL)
+			onMiddleClick.at(wId)(wManager.at(wId), coord);
 		break;
 	}
 	case WM_SETFOCUS: //Get Focus
 	{
-		if (onFocus != NULL)
-			onFocus(hwnd, true);
+		if (onFocus.at(wId) != NULL)
+			onFocus.at(wId)(wManager.at(wId), true);
 		break;
 	}
 	case WM_KILLFOCUS: //Lost Focus
 	{
-		if (onFocus != NULL)
-			onFocus(hwnd, false);
+		if (onFocus.at(wId) != NULL)
+			onFocus.at(wId)(wManager.at(wId), false);
 		break;
 	}
 	case WM_NCHITTEST: //Drag and move window by it's content
 	{
-		LRESULT hit = DefWindowProc(wHWND, msg, wParam, lParam);
+		LRESULT hit = DefWindowProc(wHWND.at(wId), msg, wParam, lParam);
 		if (GetAsyncKeyState(VK_LBUTTON) & VK_LBUTTON && hit == HTCLIENT && wDragAndMove) hit = HTCAPTION;
 		return hit;
 	}
@@ -637,14 +661,14 @@ LRESULT CALLBACK UIManager::WindowManager::WndProc(HWND hwnd, UINT msg, WPARAM w
 	}
 	case WM_DESTROY: //Form Destroyed
 	{
-		if (onDestroy != NULL)
-			onDestroy(hwnd);
+		if (onDestroy.at(wId) != NULL)
+			onDestroy.at(wId)(wManager.at(wId));
 		PostQuitMessage(0);
 		break;
 	}
 	}
-	if (onMessageRec != NULL)
-		onMessageRec(hwnd, msg, wParam, lParam);
+	if (onMessageRec.at(wId) != NULL)
+		onMessageRec.at(wId)(wManager.at(wId), msg, wParam, lParam);
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 

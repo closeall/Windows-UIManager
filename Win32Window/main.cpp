@@ -5,46 +5,44 @@
 #include "UIManager\WindowManager.h"
 #include "UIManager\View.h"
 
+using namespace UIManager;
+
 //CallBacks
-void onCreate(HWND hwnd);
-void onDestroy(HWND hwnd);
+void onCreate(WindowManager *window);
+void onDestroy(WindowManager *window);
 void onButtonClick(HWND object);
 void onButtonDoubleClick(HWND object);
 void onButtonHover(HWND object);
 void onButtonEndHover(HWND object);
 void onTextChange(HWND object, std::string text);
-void onNormalRedraw(HWND object, LPDRAWITEMSTRUCT &item);
 
 //Exit Button
-UIManager::View exitButton;
+View exitButton;
 void onExit(HWND object);
 void onExitHover(HWND object);
 void onExitHoverEnd(HWND object);
 //Minimize Button
-UIManager::View minimButton;
+View minimButton;
 void onMinimize(HWND object);
 void onMinimizeHover(HWND object);
 void onMinimizeHoverEnd(HWND object);
 //ProgressBar
-UIManager::View progress;
+View progress;
 
 //Objects
-UIManager::WindowManager window;
-UIManager::View textView;
-UIManager::View button;
-UIManager::View editText;
-UIManager::View pictureBox;
+View textView;
+View button;
+View editText;
+View pictureBox;
 
-
-UIManager::View customb;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+	WindowManager window;
 	window.setInitialData(hInstance, "Ventana de Prueba", 240, 120);
 	window.setSize(850, 520);
-	//window.setBackground(HEX("#ff0000"));
 	window.setIcon(UIManager::Icon("g.ico"));
-	//window.allowResize(false);
-	//window.disallowTitleBar(true);
+	window.allowResize(false);
+	window.disallowTitleBar(true);
 	window.allowDragAndMove(true);
 	window.allowMaximizeButton(false);
 	//Callbacks
@@ -52,39 +50,40 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	window.setOnDestroy(onDestroy);
 	window.build();
 }
-
-void onCreate(HWND hwnd) {
-	/*//Background
+WindowManager window1;
+void onCreate(WindowManager *window) {
+	window1.setInitialData(window->getHINSTANCE(), "Ventana de Prueba", 240, 120);
+	//Background
 	pictureBox = UIManager::View(UIManager::PictureBox, 0, 0);
 	pictureBox.setPictureRessource(UIManager::Bitmap("bg.bmp"));
-	window.addView(pictureBox);
-	window.setTransparentKeyColor(HEX("#484848"));
+	window->addView(pictureBox);
+	window->setTransparentKeyColor(HEX("#484848"));
 	//Exit Button
 	exitButton = UIManager::View(UIManager::PictureBox, 791, 53);
 	exitButton.setPictureRessource(UIManager::Bitmap("u.bmp"));
 	exitButton.setOnClick(onExit);
 	exitButton.setOnCursorEnter(onExitHover);
 	exitButton.setOnCursorLeave(onExitHoverEnd);
-	window.addView(exitButton);
+	window->addView(exitButton);
 	//Minimize Button
 	minimButton = UIManager::View(UIManager::PictureBox, 770, 53);
 	minimButton.setPictureRessource(UIManager::Bitmap("m.bmp"));
 	minimButton.setOnClick(onMinimize);
 	minimButton.setOnCursorEnter(onMinimizeHover);
 	minimButton.setOnCursorLeave(onMinimizeHoverEnd);
-	window.addView(minimButton);
+	window->addView(minimButton);
 	//ProgressBar
 	progress = UIManager::View(UIManager::ProgressBar, 105, 370);
 	progress.setSize(475, 30);
 	progress.setProgressVertical();
-	window.addView(progress);
+	window->addView(progress);
 	progress.setProgressState(UIManager::UndefinedProgress);
 	//TextBox1
 	textView = UIManager::View(UIManager::TextView, 100, 100);
 	textView.setText("This is a message");
 	textView.setTextColor(RGB(255, 0, 0));
 	textView.setOnCursorEnter(onButtonHover);
-	window.addView(textView);
+	window->addView(textView);
 	//Button1
 	button = UIManager::View(UIManager::Button);
 	button.setText("Click here");
@@ -93,7 +92,7 @@ void onCreate(HWND hwnd) {
 	button.setOnCursorEnter(onButtonHover);
 	button.setOnCursorLeave(onButtonEndHover);
 	button.setOnDoubleClick(onButtonDoubleClick);
-	window.addView(button);
+	window->addView(button);
 	//EditText1
 	UIManager::InputRule rule;
 	rule.numbersOnly = true;
@@ -104,17 +103,7 @@ void onCreate(HWND hwnd) {
 	editText.setMargin(UIManager::ViewMargin::Center);
 	editText.setLocation(70, 120);
 	editText.setOnTextChange(onTextChange);
-	window.addView(editText);
-	//Custom one
-	customb = UIManager::View(UIManager::CustomButton);
-	customb.setLocation(500, 50);
-	customb.setSize(90, 30);
-	customb.setOnNormalRedraw(onNormalRedraw);
-	window.addView(customb);*/
-}
-
-void onNormalRedraw(HWND object, LPDRAWITEMSTRUCT &item) {
-	//MessageBox(0, "xd", "see U", MB_OK);
+	window->addView(editText);
 }
 
 void onButtonHover(HWND object) {
@@ -129,6 +118,7 @@ void onButtonClick(HWND object) {
 	button.setText("Clicked!");
 	textView.setTextColor(RGB(255, 255, 0));
 	textView.setTextSize(18);
+	window1.build();
 }
 
 void onButtonDoubleClick(HWND object) {
@@ -144,7 +134,7 @@ void onExit(HWND object)
 {
 	exitButton.setPictureRessource(UIManager::Bitmap("up.bmp"));
 	Sleep(150);
-	window.destroy();
+	//window.destroy();
 }
 
 void onExitHover(HWND object)
@@ -161,7 +151,7 @@ void onMinimize(HWND object)
 {
 	minimButton.setPictureRessource(UIManager::Bitmap("mp.bmp"));
 	Sleep(150);
-	window.minimize();
+	//window.minimize();
 }
 
 void onMinimizeHover(HWND object)
@@ -174,5 +164,6 @@ void onMinimizeHoverEnd(HWND object)
 	minimButton.setPictureRessource(UIManager::Bitmap("m.bmp"));
 }
 
-void onDestroy(HWND hwnd) {
+void onDestroy(UIManager::WindowManager *window) {
+	window->UIM_VERSION();
 }

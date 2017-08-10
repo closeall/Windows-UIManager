@@ -21,13 +21,13 @@ limitations under the License.*/
 #include <string>
 
 //Window Callbacks
-typedef std::function<void(HWND hwnd)> wCreateCallBack;
-typedef std::function<void(HWND hwnd)> wDestroyCallBack;
-typedef std::function<void(HWND hwnd, bool focused)> wFocusCallBack;
-typedef std::function<void(HWND hwnd, UIManager::Coordinates coord)> wLeftClickCallBack;
-typedef std::function<void(HWND hwnd, UIManager::Coordinates coord)> wRightClickCallBack;
-typedef std::function<void(HWND hwnd, UIManager::Coordinates coord)> wMiddleClickCallBack;
-typedef std::function<void(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)> wPersonalizedCallBack;
+typedef std::function<void(UIManager::WindowManager *window)> wCreateCallBack;
+typedef std::function<void(UIManager::WindowManager *window)> wDestroyCallBack;
+typedef std::function<void(UIManager::WindowManager *window, bool focused)> wFocusCallBack;
+typedef std::function<void(UIManager::WindowManager *window, UIManager::Coordinates coord)> wLeftClickCallBack;
+typedef std::function<void(UIManager::WindowManager *window, UIManager::Coordinates coord)> wRightClickCallBack;
+typedef std::function<void(UIManager::WindowManager *window, UIManager::Coordinates coord)> wMiddleClickCallBack;
+typedef std::function<void(UIManager::WindowManager *window, UINT msg, WPARAM wParam, LPARAM lParam)> wPersonalizedCallBack;
 
 //View Callbacks
 typedef std::function<void(HWND hwnd)> vOnClick;
